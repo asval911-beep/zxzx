@@ -459,17 +459,19 @@ export default function ComplaintList({ complaints, onDelete, onUpdate }: Compla
                 {comp.details}
               </p>
               
-              <div className="pt-4 grid grid-cols-2 gap-3 text-[10px] font-black">
-                <div className="flex items-center gap-2 text-municipality-blue/80 dark:text-slate-200 truncate bg-gray-50 p-2 rounded-lg">
-                  <User size={14} className="text-municipality-gold" /> {comp.inspectorName}
+              <div className="pt-4 grid grid-cols-2 gap-3 text-[11px] font-bold">
+                <div className="flex items-center gap-2 truncate bg-slate-50 dark:bg-[#123354] text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-[#163f69]/80 p-2 rounded-lg">
+                  <User size={14} className="text-municipality-gold shrink-0" />
+                  <span className="truncate">{comp.inspectorName}</span>
                 </div>
-                <div className="flex items-center gap-2 text-municipality-blue/80 dark:text-slate-200 truncate bg-gray-50 p-2 rounded-lg">
-                  <MapPin size={14} className="text-municipality-gold" /> {comp.centerName}
+                <div className="flex items-center gap-2 truncate bg-slate-50 dark:bg-[#123354] text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-[#163f69]/80 p-2 rounded-lg">
+                  <MapPin size={14} className="text-municipality-gold shrink-0" />
+                  <span className="truncate">{comp.centerName}</span>
                 </div>
               </div>
             </div>
 
-            <div className="p-4 bg-gray-50 border-t border-gray-100 flex flex-col gap-3">
+            <div className="p-4 bg-slate-50/70 dark:bg-[#123354]/40 border-t border-slate-100 dark:border-slate-850 flex flex-col gap-3">
               {deletingId === comp.id ? (
                 <div className="flex items-center justify-center gap-2 w-full bg-red-50 dark:bg-red-950/20 p-2 rounded-xl border border-red-100 dark:border-red-900/40">
                   <span className="text-xs font-black text-red-600 dark:text-red-400">تأكيد الحذف؟</span>
