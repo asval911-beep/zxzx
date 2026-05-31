@@ -460,10 +460,10 @@ export default function ComplaintList({ complaints, onDelete, onUpdate }: Compla
               </p>
               
               <div className="pt-4 grid grid-cols-2 gap-3 text-[10px] font-black">
-                <div className="flex items-center gap-2 text-municipality-blue/60 truncate bg-gray-50 p-2 rounded-lg">
+                <div className="flex items-center gap-2 text-municipality-blue/80 dark:text-slate-200 truncate bg-gray-50 p-2 rounded-lg">
                   <User size={14} className="text-municipality-gold" /> {comp.inspectorName}
                 </div>
-                <div className="flex items-center gap-2 text-municipality-blue/60 truncate bg-gray-50 p-2 rounded-lg">
+                <div className="flex items-center gap-2 text-municipality-blue/80 dark:text-slate-200 truncate bg-gray-50 p-2 rounded-lg">
                   <MapPin size={14} className="text-municipality-gold" /> {comp.centerName}
                 </div>
               </div>
@@ -557,7 +557,7 @@ export default function ComplaintList({ complaints, onDelete, onUpdate }: Compla
                   <div 
                     ref={previewRef}
                     id="complaint-preview-modal" 
-                    className="w-[820px] bg-white p-8 space-y-6 shadow-md border border-gray-200 origin-top transition-transform duration-200"
+                    className="w-[820px] bg-white p-8 space-y-6 shadow-md border border-gray-200 origin-top transition-transform duration-200 official-a4-canvas"
                     style={{ 
                       minHeight: 'auto', 
                       direction: 'rtl',

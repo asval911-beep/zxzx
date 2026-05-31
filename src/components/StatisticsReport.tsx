@@ -188,9 +188,9 @@ function AestheticSelect({
 
   const themeClasses = {
     blue: {
-      btn: "border-blue-200 focus:border-blue-500 bg-blue-50/10 dark:border-blue-800 dark:bg-blue-950/20",
-      pill: "bg-blue-100/80 text-blue-900 border-blue-200 dark:bg-blue-950/40 dark:text-blue-200 dark:border-blue-800",
-      itemActive: "bg-blue-500 text-white dark:bg-blue-600 dark:text-white",
+      btn: "border-municipality-blue/30 focus:border-municipality-blue bg-municipality-blue/5 dark:border-municipality-blue/50 dark:bg-municipality-blue/20",
+      pill: "bg-municipality-blue/15 text-municipality-blue border-municipality-blue/25 dark:bg-municipality-blue/40 dark:text-gray-100 dark:border-municipality-blue/40",
+      itemActive: "bg-municipality-blue text-white dark:bg-municipality-blue dark:text-white",
     },
     amber: {
       btn: "border-amber-200 focus:border-amber-500 bg-amber-50/10 dark:border-amber-800 dark:bg-amber-950/20",
@@ -218,10 +218,10 @@ function AestheticSelect({
 
   const getIcon = () => {
     switch(iconType) {
-      case 'user': return <User size={isCompact ? 12 : 14} className="text-slate-600 shrink-0" />;
-      case 'map': return <MapPin size={isCompact ? 12 : 14} className="text-slate-600 shrink-0" />;
-      case 'flag': return <Clipboard size={isCompact ? 12 : 14} className="text-slate-600 shrink-0" />;
-      case 'calendar': return <Calendar size={isCompact ? 12 : 14} className="text-slate-600 shrink-0" />;
+      case 'user': return <User size={isCompact ? 12 : 14} className="text-slate-500 dark:text-slate-300 shrink-0" />;
+      case 'map': return <MapPin size={isCompact ? 12 : 14} className="text-slate-500 dark:text-slate-300 shrink-0" />;
+      case 'flag': return <Clipboard size={isCompact ? 12 : 14} className="text-slate-500 dark:text-slate-300 shrink-0" />;
+      case 'calendar': return <Calendar size={isCompact ? 12 : 14} className="text-slate-500 dark:text-slate-300 shrink-0" />;
       default: return null;
     }
   };
@@ -1707,20 +1707,20 @@ export default function StatisticsReport({
                   
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-gray-500 dark:text-gray-450">الفترة من تاريخ</label>
+                      <label className="text-[11px] font-bold text-gray-500 dark:text-gray-300">الفترة من تاريخ</label>
                       <input 
                         type="date" 
-                        className="municipal-input focus:ring-municipality-gold !bg-white !text-slate-900 !border-gray-300 dark:!bg-white dark:!text-slate-900 dark:!border-gray-300 font-extrabold" 
+                        className="municipal-input focus:ring-municipality-gold font-extrabold" 
                         value={formData.date}
                         onChange={e => setFormData({ ...formData, date: e.target.value })}
                         required
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-gray-500 dark:text-gray-450">الفترة إلى تاريخ</label>
+                      <label className="text-[11px] font-bold text-gray-500 dark:text-gray-300">الفترة إلى تاريخ</label>
                       <input 
                         type="date" 
-                        className="municipal-input focus:ring-municipality-gold !bg-white !text-slate-900 !border-gray-300 dark:!bg-white dark:!text-slate-900 dark:!border-gray-300 font-extrabold" 
+                        className="municipal-input focus:ring-municipality-gold font-extrabold" 
                         value={formData.dateTo || ''}
                         onChange={e => setFormData({ ...formData, dateTo: e.target.value })}
                         required
@@ -1766,8 +1766,8 @@ export default function StatisticsReport({
                 <div className="bg-slate-50/50 dark:bg-slate-900/45 p-6 rounded-2xl border border-gray-150 dark:border-slate-800 space-y-4">
                   <div className="flex items-center justify-between border-b border-gray-250 dark:border-slate-800 pb-3">
                     <div className="flex items-center gap-2">
-                      <User className="text-municipality-blue dark:text-gray-305" size={20} />
-                      <span className="text-sm font-black text-municipality-blue dark:text-gray-150">بيانات وإحصائيات المركز المعتمدة للتقرير الإحصائي</span>
+                      <User className="text-municipality-blue dark:text-municipality-gold" size={20} />
+                      <span className="text-sm font-black text-municipality-blue dark:text-white">بيانات وإحصائيات المركز المعتمدة للتقرير الإحصائي</span>
                     </div>
                   </div>
 
@@ -1968,7 +1968,7 @@ export default function StatisticsReport({
                    
                    <button 
                      type="submit" 
-                     className="w-full flex items-center justify-center gap-2 bg-municipality-blue hover:bg-blue-800 text-white font-black py-3 px-6 rounded-xl transition-all shadow-md active:scale-95"
+                     className="w-full flex items-center justify-center gap-2 bg-municipality-blue hover:bg-slate-800 text-white font-black py-3 px-6 rounded-xl transition-all shadow-md active:scale-95"
                    >
                      <Save size={18} />
                      اعتماد وحفظ الجدول الإحصائي 💾
@@ -1988,7 +1988,7 @@ export default function StatisticsReport({
                   <div 
                     ref={statsPreviewRef}
                     id="stats-report-canvas-preview"
-                    className="w-[820px] bg-white text-slate-900 border border-gray-300 p-6 shadow-2xl relative select-none origin-top transition-transform duration-200" 
+                    className="w-[820px] bg-white text-slate-900 border border-gray-300 p-6 shadow-2xl relative select-none origin-top transition-transform duration-200 official-a4-canvas" 
                     style={{ 
                       direction: 'rtl',
                       transform: `scale(${statsPreviewScale})`,
@@ -2426,7 +2426,7 @@ export default function StatisticsReport({
 
               const chartCategories = [
                 { name: 'قانون 354 (نظافة)', val: hygieneVal, gradientColors: ['#d97706', '#f59e0b'], textClass: 'text-amber-600 dark:text-amber-400', badgeBg: 'bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-305' },
-                { name: 'مخالفات بلدية 9-87', val: violations987Val, gradientColors: ['#2563eb', '#60a5fa'], textClass: 'text-blue-600 dark:text-blue-400', badgeBg: 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-305' },
+                { name: 'مخالفات بلدية 9-87', val: violations987Val, gradientColors: ['#0e2c4d', '#1e4b7b'], textClass: 'text-municipality-blue dark:text-slate-300', badgeBg: 'bg-blue-50 dark:bg-municipality-blue/30 text-municipality-blue dark:text-slate-200' },
                 { name: 'الشكاوى منجزة كلياً', val: complaintsVal, gradientColors: ['#06b6d4', '#22d3ee'], textClass: 'text-cyan-600 dark:text-cyan-400', badgeBg: 'bg-cyan-50 dark:bg-cyan-950/30 text-cyan-705 dark:text-cyan-305' },
                 { name: 'مخالفات إشغالات الطرق', val: roadVal, gradientColors: ['#ef4444', '#f87171'], textClass: 'text-red-600 dark:text-red-400', badgeBg: 'bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-305' },
                 { name: 'رفع المركبات والمهملات', val: carsVal, gradientColors: ['#8b5cf6', '#a78bfa'], textClass: 'text-purple-600 dark:text-purple-400', badgeBg: 'bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-305' },
@@ -2579,7 +2579,7 @@ export default function StatisticsReport({
                       <div className="space-y-1">
                         <h4 className="font-black text-slate-900 dark:text-slate-100 text-sm">{s.inspectorName}</h4>
                         <p className="text-[11px] text-gray-500 font-bold flex flex-wrap gap-1.5 items-center">
-                          <span className="text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded">{s.centerName}</span>
+                          <span className="text-municipality-blue bg-blue-50 px-1.5 py-0.5 rounded">{s.centerName}</span>
                           {s.shift && <span className="text-slate-700 bg-slate-150 px-1.5 py-0.5 rounded">نوبة: {s.shift}</span>}
                           {s.fileNumber && <span className="text-slate-500 font-mono">ملف: {s.fileNumber}</span>}
                         </p>
@@ -2610,11 +2610,11 @@ export default function StatisticsReport({
                           {/* Item 2: 9-87 */}
                           <div className="space-y-1">
                             <div className="flex justify-between items-center text-[10px] font-bold">
-                              <span className="text-blue-600 dark:text-blue-400">مخالفات بلدية 9-87</span>
-                              <span className="font-mono bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 px-1.5 py-0.2 rounded-md font-black">{s.violations9_87 || 0}</span>
+                              <span className="text-municipality-blue dark:text-slate-300">مخالفات بلدية 9-87</span>
+                              <span className="font-mono bg-blue-50 dark:bg-municipality-blue/20 text-municipality-blue dark:text-slate-205 px-1.5 py-0.2 rounded-md font-black">{s.violations9_87 || 0}</span>
                             </div>
                             <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                              <div className="h-full bg-gradient-to-l from-blue-600 to-blue-400 rounded-full transition-all duration-300" style={{ width: `${Math.min(100, (s.violations9_87 * 10))}%` }} />
+                              <div className="h-full bg-gradient-to-l from-municipality-blue to-[#1e4b7b] rounded-full transition-all duration-300" style={{ width: `${Math.min(100, (s.violations9_87 * 10))}%` }} />
                             </div>
                           </div>
 
@@ -2834,7 +2834,7 @@ export default function StatisticsReport({
                       iconType="map"
                     />
                     {settings.centers.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 mt-1.5 p-1 bg-white/5 bg-slate-50/50 rounded-xl border border-blue-300/10 font-bold">
+                      <div className="flex flex-wrap gap-1.5 mt-1.5 p-1 bg-white/5 bg-slate-50/50 rounded-xl border border-municipality-blue/20 font-bold">
                         {settings.centers.map(c => {
                           const isSelected = fieldForm.centerName === c.name;
                           return (
@@ -2844,11 +2844,11 @@ export default function StatisticsReport({
                               onClick={() => setFieldForm({ ...fieldForm, centerName: c.name })}
                               className={`px-2 py-0.5 rounded-lg text-[9.5px] font-black transition-all flex items-center gap-1.5 border ${
                                 isSelected 
-                                  ? 'bg-blue-600 text-white border-blue-600 shadow-sm' 
-                                  : 'bg-white dark:bg-slate-800 text-slate-705 dark:text-slate-200 hover:bg-blue-50/55 border-slate-200 dark:border-slate-700'
+                                  ? 'bg-municipality-blue text-white border-municipality-blue shadow-sm' 
+                                  : 'bg-white dark:bg-slate-800 text-slate-705 dark:text-slate-200 hover:bg-municipality-blue/10 border-slate-200 dark:border-slate-700'
                               }`}
                             >
-                              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></span>
+                              <span className="w-1.5 h-1.5 rounded-full bg-municipality-blue shrink-0"></span>
                               {c.name}
                             </button>
                           );
@@ -3132,7 +3132,7 @@ export default function StatisticsReport({
                 <div 
                   ref={fieldPreviewRef}
                   id="field-report-canvas-preview"
-                  className="w-[820px] bg-white text-slate-900 border border-gray-300 p-6 shadow-2xl relative select-none origin-top transition-transform duration-200" 
+                  className="w-[820px] bg-white text-slate-900 border border-gray-300 p-6 shadow-2xl relative select-none origin-top transition-transform duration-200 official-a4-canvas" 
                   style={{ 
                     direction: 'rtl',
                     transform: `scale(${fieldPreviewScale})`,
@@ -3318,7 +3318,7 @@ export default function StatisticsReport({
                       <p className="text-xs text-gray-500 font-bold flex flex-wrap gap-2 items-center">
                         <span className="text-slate-700 bg-slate-100 px-2 py-0.5 rounded">{report.jobTitle || 'مفتش نظافة'}</span>
                         <span className="text-amber-700 bg-amber-50 px-2 py-0.5 rounded font-sans font-bold">نوبة: {report.shift || 'صباحي'}</span>
-                        <span className="text-blue-700 bg-blue-50 px-2 py-0.5 rounded">{report.centerName}</span>
+                        <span className="text-municipality-blue bg-blue-50 px-2 py-0.5 rounded">{report.centerName}</span>
                       </p>
                     </div>
 
@@ -3332,7 +3332,7 @@ export default function StatisticsReport({
                         <span className="text-slate-950 dark:text-slate-100 font-black">من {report.exitTime || '--'} إلى {report.returnTime || '--'}</span>
                       </p>
                       {report.notes && (
-                        <p className="text-[11px] text-gray-500 dark:text-gray-450 line-clamp-1 border-t border-gray-150 pt-1.5 mt-1">
+                        <p className="text-[11px] text-gray-500 dark:text-gray-300 line-clamp-1 border-t border-gray-150 pt-1.5 mt-1">
                           <span className="font-bold">ملاحظة:</span> {report.notes}
                         </p>
                       )}
@@ -3456,7 +3456,7 @@ export default function StatisticsReport({
                     window.open(url.toString(), '_blank');
                     setPrintIframeModal(prev => ({ ...prev, show: false }));
                   }}
-                  className="flex-1 bg-municipality-blue hover:bg-blue-800 text-white font-black py-3 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 cursor-pointer text-xs"
+                  className="flex-1 bg-municipality-blue hover:bg-slate-800 text-white font-black py-3 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 cursor-pointer text-xs"
                 >
                   <Printer size={16} />
                   فتح في علامة تبويب جديدة وبدء الطباعة فوراً ↗️
@@ -3506,7 +3506,7 @@ export default function StatisticsReport({
                   className="w-full max-w-4xl flex justify-center items-start overflow-y-auto overflow-x-auto max-h-[65vh] sm:max-h-[72vh] beautiful-scrollbar p-3 bg-gray-100/40 dark:bg-slate-900/20 rounded-2xl border border-gray-200/50 dark:border-slate-800"
                 >
                   <div 
-                    className="w-[820px] bg-white text-slate-900 border border-gray-300 p-8 shadow-2xl relative select-none"
+                    className="w-[820px] bg-white text-slate-900 border border-gray-300 p-8 shadow-2xl relative select-none official-a4-canvas"
                     style={{ minHeight: '1120px', direction: 'rtl' }}
                   >
                     {/* Outer double border matching the official printed templates */}

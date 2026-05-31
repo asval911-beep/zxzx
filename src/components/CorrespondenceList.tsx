@@ -223,7 +223,7 @@ export default function CorrespondenceList({ books, onSave, onDelete }: Correspo
                       onClick={() => setFormData({...formData, type: 'outgoing'})}
                       className={cn(
                         "flex-1 p-3 rounded-lg border-2 flex items-center justify-center gap-2 font-bold",
-                        formData.type === 'outgoing' ? "bg-blue-50 border-blue-600 text-blue-700" : "bg-white border-gray-200 text-gray-400"
+                        formData.type === 'outgoing' ? "bg-blue-50/50 border-municipality-blue text-municipality-blue" : "bg-white border-gray-200 text-gray-400"
                       )}
                      >
                         صادر <ArrowUpRight size={20} />
@@ -367,7 +367,7 @@ export default function CorrespondenceList({ books, onSave, onDelete }: Correspo
           <div key={book.id} className="municipal-card flex overflow-hidden">
             <div className={cn(
               "w-2.5 shrink-0",
-              book.type === 'incoming' ? "bg-green-500" : "bg-blue-500"
+              book.type === 'incoming' ? "bg-green-500" : "bg-municipality-blue"
             )} />
             <div className="p-6 flex-1">
               <div className="flex justify-between items-start mb-3">
@@ -377,7 +377,7 @@ export default function CorrespondenceList({ books, onSave, onDelete }: Correspo
                     <span className="flex items-center gap-1 font-bold"><Calendar size={12} /> {book.date}</span>
                     <span className={cn(
                       "px-2.5 py-0.5 rounded-full font-black text-[10px]",
-                      book.type === 'incoming' ? "bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-300" : "bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
+                      book.type === 'incoming' ? "bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-300" : "bg-blue-50/80 text-municipality-blue border border-municipality-blue/10 dark:bg-municipality-blue/30 dark:text-gray-100 dark:border-municipality-blue/40"
                     )}>
                       {book.type === 'incoming' ? 'وارد' : 'صادر'}
                     </span>

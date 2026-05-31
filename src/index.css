@@ -117,24 +117,39 @@
 }
 
 .dark-theme .bg-white,
+.dark-theme [class*="bg-white"],
 .dark-theme .dark\:bg-slate-900,
+.dark-theme [class*="dark:bg-slate-900"],
 .dark-theme .dark\:bg-slate-950,
+.dark-theme [class*="dark:bg-slate-950"],
 .dark-theme .bg-slate-900,
-.dark-theme .bg-slate-950 {
+.dark-theme [class*="bg-slate-900"],
+.dark-theme .bg-slate-950,
+.dark-theme [class*="bg-slate-950"] {
   background-color: #0e2c4d !important;
 }
 
 .dark-theme .bg-gray-50,
+.dark-theme [class*="bg-gray-50"],
 .dark-theme .bg-slate-50,
+.dark-theme [class*="bg-slate-50"],
 .dark-theme .bg-slate-100,
+.dark-theme [class*="bg-slate-100"],
 .dark-theme .dark\:bg-slate-800,
+.dark-theme [class*="dark:bg-slate-800"],
 .dark-theme .dark\:bg-slate-850,
+.dark-theme [class*="dark:bg-slate-850"],
 .dark-theme .bg-slate-800,
-.dark-theme .bg-slate-850 {
+.dark-theme [class*="bg-slate-800"],
+.dark-theme .bg-slate-850,
+.dark-theme [class*="bg-slate-850"] {
   background-color: #123354 !important;
 }
 
 .dark-theme .bg-gray-100,
+.dark-theme [class*="bg-gray-100"],
+.dark-theme [class*="bg-slate-50/50"],
+.dark-theme [class*="bg-slate-850/40"],
 .dark-theme .dark\:bg-slate-950\/40,
 .dark-theme .dark\:bg-slate-950\/50,
 .dark-theme .dark\:bg-slate-950\/20,
@@ -142,6 +157,7 @@
 .dark-theme .dark\:bg-slate-900\/45,
 .dark-theme .dark\:bg-slate-900\/35,
 .dark-theme .dark\:bg-slate-900\/20,
+.dark-theme [class*="bg-indigo-5"],
 .dark-theme .dark\:bg-\[#010915\] {
   background-color: #163f69 !important;
 }
@@ -581,9 +597,17 @@
   color: #0b0f19 !important;
 }
 
-/* Ensure select triggers inside preview elements stay light-colored and readable in dark mode */
-.aesthetic-select-trigger,
+/* Ensure select triggers inside standard UI honor theme properly, while remaining dark inside white print sheets */
+.aesthetic-select-trigger {
+  color: inherit !important;
+}
 .dark-theme .aesthetic-select-trigger {
+  color: #f1f5f9 !important;
+}
+[id^="stats-report-canvas-"] .aesthetic-select-trigger,
+[id^="field-report-canvas-"] .aesthetic-select-trigger,
+.dark-theme [id^="stats-report-canvas-"] .aesthetic-select-trigger,
+.dark-theme [id^="field-report-canvas-"] .aesthetic-select-trigger {
   color: #0b0f19 !important;
 }
 
@@ -1361,4 +1385,80 @@ select:-webkit-autofill:focus {
 .dark-theme .stat-card-emerald .space-y-1 {
   background-color: #0e241b !important;
   border-color: #059669 !important;
+}
+
+/* All official printable/downloadable A4 worksheets must ALWAYS maintain crisp white backgrounds and dark text */
+.dark-theme .official-a4-canvas,
+.dark-theme [id*="-canvas"],
+.dark-theme #complaint-preview-modal,
+.dark-theme #note-current-preview,
+.dark-theme [id^="note-"],
+.dark-theme .official-a4-canvas *,
+.dark-theme [id*="-canvas"] *,
+.dark-theme #complaint-preview-modal *,
+.dark-theme #note-current-preview *,
+.dark-theme [id^="note-"] * {
+  --color-text-slate-900: #0f172a !important;
+  --color-text-black: #000000 !important;
+}
+
+/* Force correct white background on any background class inside these canvases */
+.dark-theme .official-a4-canvas,
+.dark-theme [id*="-canvas"],
+.dark-theme #complaint-preview-modal,
+.dark-theme .official-a4-canvas [class*="bg-white"],
+.dark-theme [id*="-canvas"] [class*="bg-white"],
+.dark-theme #complaint-preview-modal [class*="bg-white"],
+.dark-theme .official-a4-canvas .bg-white,
+.dark-theme [id*="-canvas"] .bg-white,
+.dark-theme #complaint-preview-modal .bg-white,
+.dark-theme .official-a4-canvas .bg-gray-50,
+.dark-theme [id*="-canvas"] .bg-gray-50,
+.dark-theme #complaint-preview-modal .bg-gray-50,
+.dark-theme .official-a4-canvas .bg-slate-50,
+.dark-theme [id*="-canvas"] .bg-slate-50,
+.dark-theme #complaint-preview-modal .bg-slate-50 {
+  background-color: #ffffff !important;
+  color: #0d1e3d !important;
+}
+
+.dark-theme .official-a4-canvas [class*="text-"],
+.dark-theme [id*="-canvas"] [class*="text-"],
+.dark-theme #complaint-preview-modal [class*="text-"] {
+  color: #0d1e3d !important;
+}
+
+/* Fix heading colors which might be styled with text-municipality-blue */
+.dark-theme .official-a4-canvas .text-municipality-blue,
+.dark-theme [id*="-canvas"] .text-municipality-blue,
+.dark-theme #complaint-preview-modal .text-municipality-blue {
+  color: #0e2c4d !important;
+}
+
+/* Fix gold heading text colors inside the preview */
+.dark-theme .official-a4-canvas .text-municipality-gold,
+.dark-theme [id*="-canvas"] .text-municipality-gold,
+.dark-theme #complaint-preview-modal .text-municipality-gold {
+  color: #cca354 !important;
+}
+
+/* Overriding any sub-background colors inside the canvases from dark theme general bg to neutral soft paper tons */
+.dark-theme .official-a4-canvas [class*="bg-slate-"],
+.dark-theme [id*="-canvas"] [class*="bg-slate-"],
+.dark-theme #complaint-preview-modal [class*="bg-slate-"],
+.dark-theme .official-a4-canvas [class*="bg-gray-"],
+.dark-theme [id*="-canvas"] [class*="bg-gray-"],
+.dark-theme #complaint-preview-modal [class*="bg-gray-"] {
+  background-color: #f8fafc !important;
+  color: #0d1e3d !important;
+}
+
+.dark-theme .official-a4-canvas td,
+.dark-theme [id*="-canvas"] td,
+.dark-theme #complaint-preview-modal td,
+.dark-theme .official-a4-canvas th,
+.dark-theme [id*="-canvas"] th,
+.dark-theme #complaint-preview-modal th {
+  background-color: transparent !important;
+  color: #0b0f19 !important;
 }

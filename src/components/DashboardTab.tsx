@@ -217,9 +217,9 @@ export default function DashboardTab({
           <p className="text-xs text-white/50 font-bold">شكوى مقيدة بالمنظومة</p>
         </div>
 
-        <div className="municipal-card p-6 border-r-4 border-r-[#11335c] border border-[#163f69]/20 relative bg-white shadow hover:shadow-md transition-all">
+        <div className="municipal-card p-6 border-r-4 border-r-municipality-blue border border-municipality-blue/10 relative bg-white shadow hover:shadow-md transition-all">
           <div className="flex justify-between items-start mb-4">
-            <div className="p-2 bg-blue-50 text-[#11335c] rounded-xl"><CheckCircle2 size={22} /></div>
+            <div className="p-2 bg-municipality-blue/10 text-municipality-blue rounded-xl"><CheckCircle2 size={22} /></div>
             <span className="text-[11px] font-bold text-gray-400">المنجزة بالكامل</span>
           </div>
           <div className="text-4xl font-black text-slate-900 mb-1 tracking-tight">{doneComplaints.length}</div>
@@ -228,7 +228,7 @@ export default function DashboardTab({
 
         <div className="municipal-card p-6 border-r-4 border-r-[#163f69] border border-[#163f69]/20 relative bg-white shadow hover:shadow-md transition-all">
           <div className="flex justify-between items-start mb-4">
-            <div className="p-2 bg-blue-50 text-[#163f69] rounded-xl"><AlertCircle size={22} /></div>
+            <div className="p-2 bg-[#163f69]/10 text-[#163f69] rounded-xl"><AlertCircle size={22} /></div>
             <span className="text-[11px] font-bold text-gray-400">مخالفات محررة فنية</span>
           </div>
           <div className="text-4xl font-black text-slate-900 mb-1 tracking-tight">{totalCleaning}</div>
@@ -237,7 +237,7 @@ export default function DashboardTab({
 
         <div className="municipal-card p-6 border-r-4 border-r-[#1f4c7d] border border-[#163f69]/20 relative bg-white shadow hover:shadow-md transition-all">
           <div className="flex justify-between items-start mb-4">
-            <div className="p-2 bg-blue-50 text-[#1f4c7d] rounded-xl"><TrendingUp size={22} /></div>
+            <div className="p-2 bg-[#1f4c7d]/10 text-[#1f4c7d] rounded-xl"><TrendingUp size={22} /></div>
             <span className="text-[11px] font-bold text-gray-400">الإجراءات الرقابية</span>
           </div>
           <div className="text-4xl font-black text-slate-900 mb-1 tracking-tight">{totalUndertakings + totalWarnings}</div>
@@ -260,7 +260,7 @@ export default function DashboardTab({
                 <div key={idx} className="space-y-1.5 p-2 bg-slate-50/50 rounded-xl hover:bg-slate-50 transition-colors">
                   <div className="flex justify-between items-center text-xs">
                     <span className="font-extrabold text-slate-800">{cat.name}</span>
-                    <span className="font-bold text-municipality-blue bg-blue-50/60 px-2 py-0.5 rounded-lg text-[10px]">
+                    <span className="font-bold text-municipality-blue bg-municipality-blue/10 px-2 py-0.5 rounded-lg text-[10px]">
                       {cat.resolved} من {cat.total} منجزة ({cat.percentage}%)
                     </span>
                   </div>
@@ -376,7 +376,7 @@ export default function DashboardTab({
                   "p-3 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-slate-300 transition-all",
                   log.action === 'delete' ? "bg-red-950/20 border-red-900/40 text-red-200" :
                   log.action === 'done' ? "bg-emerald-950/20 border-emerald-900/40 text-emerald-200" :
-                  log.action === 'create' ? "bg-blue-950/20 border-blue-900/40 text-blue-200" : "bg-slate-800/40 border-slate-755 text-slate-205"
+                  log.action === 'create' ? "bg-municipality-blue/10 border-municipality-blue/30 text-slate-100" : "bg-slate-800/40 border-slate-755 text-slate-205"
                 )}
               >
                 <div className="flex items-start sm:items-center gap-2.5">
@@ -385,7 +385,7 @@ export default function DashboardTab({
                       "px-2 py-0.5 rounded-md text-[10px] font-black uppercase text-center w-24 shrink-0",
                       log.action === 'delete' ? "bg-red-500/20 text-red-400 border border-red-500/20" :
                       log.action === 'done' ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/20" :
-                      log.action === 'create' ? "bg-blue-500/20 text-blue-400 border border-blue-500/20" : "bg-slate-700 text-slate-300"
+                      log.action === 'create' ? "bg-municipality-blue/30 text-slate-200 border border-municipality-blue/20" : "bg-slate-700 text-slate-300"
                     )}
                   >
                     {log.action === 'delete' ? 'مسح وحذف' :

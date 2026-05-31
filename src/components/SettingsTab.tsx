@@ -129,7 +129,7 @@ export default function SettingsTab({ settings, onUpdate }: SettingsTabProps) {
                 <div className="flex items-center gap-3">
                   <div className={cn(
                     "w-8 h-8 rounded-full flex items-center justify-center font-black text-[10px] shadow-inner",
-                    inspector.type === 'center' ? "bg-blue-50 text-blue-600" : "bg-amber-50 text-amber-600"
+                    inspector.type === 'center' ? "bg-blue-50 text-municipality-blue font-black" : "bg-amber-50 text-amber-700"
                   )}>
                     {inspector.type === 'center' ? 'C' : 'M'}
                   </div>
@@ -137,7 +137,7 @@ export default function SettingsTab({ settings, onUpdate }: SettingsTabProps) {
                     <span className="font-bold text-sm text-municipality-blue">{inspector.name}</span>
                     <span className={cn(
                       "text-[9px] font-black uppercase tracking-widest",
-                      inspector.type === 'center' ? "text-blue-400" : "text-amber-500"
+                      inspector.type === 'center' ? "text-municipality-blue/60 dark:text-slate-350" : "text-amber-500"
                     )}>
                       {inspector.type === 'center' ? 'الـمـراكـز' : 'الـمـجـمـوعـة م'}
                     </span>
@@ -232,7 +232,7 @@ export default function SettingsTab({ settings, onUpdate }: SettingsTabProps) {
                 <div className="flex items-center gap-3">
                   <div className={cn(
                     "w-8 h-8 rounded-full flex items-center justify-center font-black text-[10px] shadow-inner",
-                    center.type === 'center' ? "bg-amber-50 text-amber-600" : "bg-blue-50 text-blue-600"
+                    center.type === 'center' ? "bg-amber-50 text-amber-750" : "bg-blue-50 text-municipality-blue font-black"
                   )}>
                     <MapPin size={14} />
                   </div>
@@ -240,7 +240,7 @@ export default function SettingsTab({ settings, onUpdate }: SettingsTabProps) {
                     <span className="font-bold text-sm text-municipality-blue">{center.name}</span>
                     <span className={cn(
                       "text-[9px] font-black uppercase tracking-widest",
-                      center.type === 'center' ? "text-amber-500" : "text-blue-400"
+                      center.type === 'center' ? "text-amber-500" : "text-municipality-blue/60 dark:text-slate-350"
                     )}>
                       {center.type === 'center' ? 'مـركـز رئيـسـي' : 'الـمـجـمـوعـة م'}
                     </span>
