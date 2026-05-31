@@ -1,0 +1,8 @@
+{
+  "name": "نظام بلدية الكويت - مركز 139",
+  "description": "نظام تقني متطور لإدارة الشكاوي، المخالفات، التقارير الميدانية، والكتب الصادرة والواردة لمركز 139 في بلدية الكويت.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

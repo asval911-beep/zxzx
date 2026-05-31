@@ -1,0 +1,15 @@
+{
+  "name": "نظام بلدية الكويت 139",
+  "short_name": "بلدية 139",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1A2533",
+  "theme_color": "#C5A028",
+  "icons": [
+    {
+      "src": "logo_original.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

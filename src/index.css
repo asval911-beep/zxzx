@@ -1,0 +1,1364 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Noto Sans Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-municipality-blue: #0e2c4d; /* Premium deep kohl navy blue (أزرق كحلي راقي غامق) */
+  --color-municipality-gold: #D4AF37; /* Lustrous luxury gold accent (ذهبي راقي) */
+  --color-municipality-light: #F8FAFC;
+  --color-municipality-accent: #E2E8F0;
+
+  /* Force hex values for commonly used colors to avoid html2canvas oklch parsing errors */
+  --color-gray-50: #F9FAFB;
+  --color-gray-100: #F3F4F6;
+  --color-gray-200: #E5E7EB;
+  --color-gray-300: #D1D5DB;
+  --color-gray-400: #9CA3AF;
+  --color-gray-500: #6B7280;
+  --color-gray-600: #4B5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1F2937;
+  --color-gray-900: #111827;
+
+  --color-red-50: #FEF2F2;
+  --color-red-500: #EF4444;
+  --color-red-600: #DC2626;
+  --color-red-700: #B91C1C;
+  --color-red-800: #991B1B;
+
+  --color-blue-50: #EFF6FF;
+  --color-blue-600: #2563EB;
+  
+  --color-green-600: #16A34A;
+  --color-orange-600: #EA580C;
+  --color-purple-600: #9333EA;
+  --color-amber-600: #D97706;
+  --color-amber-300: #FCD34D;
+
+  --color-slate-700: #334155;
+  --color-slate-800: #1E293B;
+  --color-slate-850: #151D2A;
+  --color-slate-900: #0F172A;
+  --color-slate-950: #020617;
+  --color-slate-955: #010409;
+
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+  --color-transparent: transparent;
+}
+
+@layer base {
+  body {
+    @apply bg-municipality-light text-municipality-blue font-sans antialiased;
+    direction: rtl;
+    background-image: 
+      radial-gradient(at 100% 0%, rgba(197, 160, 40, 0.03) 0px, transparent 50%), 
+      radial-gradient(at 0% 100%, rgba(26, 37, 51, 0.03) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  /* Slightly upscale typography inside core pages to make content highly readable, avoiding navigation menus on the side */
+  main {
+    font-size: 18px !important;
+  }
+  main p, main span, main td, main th, main label, main input, main textarea, main select {
+    font-size: 1.08em;
+    font-weight: 550; /* Slightly bolder for robust reading clarity */
+  }
+  main h1, main h2, main h3, main h4 {
+    font-weight: 900;
+  }
+}
+
+.municipal-card {
+  @apply bg-white border border-gray-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] rounded-2xl overflow-hidden transition-all duration-300;
+}
+
+.municipal-input {
+  @apply w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-xl focus:ring-4 focus:ring-municipality-blue/5 focus:border-municipality-blue outline-none transition-all text-lg font-bold;
+}
+
+.municipal-button-primary {
+  @apply px-8 py-4 bg-municipality-blue text-white rounded-xl font-black hover:bg-slate-800 shadow-lg shadow-municipality-blue/20 transition-all active:scale-[0.98] flex items-center justify-center gap-3 text-base uppercase tracking-wide border-b-4 border-black/20;
+}
+
+.municipal-button-secondary {
+  @apply px-8 py-4 bg-white border-2 border-municipality-accent text-municipality-blue rounded-xl font-black hover:bg-gray-50 hover:border-municipality-blue transition-all active:scale-[0.98] flex items-center justify-center gap-3 text-base;
+}
+
+.municipal-button-danger {
+  @apply px-8 py-4 bg-red-500 text-white rounded-xl font-black hover:bg-red-600 shadow-lg shadow-red-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-3 text-base border-b-4 border-red-700/30;
+}
+
+.municipal-badge {
+  @apply px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.animate-shake {
+  animation: shake 0.15s ease-in-out 3;
+}
+
+/* Beautiful Theme Toggle Dark Mode Overrides */
+.dark-theme {
+  --color-municipality-light: #0d2036; /* Ultra-deep premium kohl-navy blue background */
+  background-color: #0d2036 !important;
+  color: #cbd5e1 !important;
+}
+
+.dark-theme main {
+  background-color: #0d2036 !important;
+  color: #e2e8f0 !important;
+}
+
+.dark-theme .bg-white,
+.dark-theme .dark\:bg-slate-900,
+.dark-theme .dark\:bg-slate-950,
+.dark-theme .bg-slate-900,
+.dark-theme .bg-slate-950 {
+  background-color: #0e2c4d !important;
+}
+
+.dark-theme .bg-gray-50,
+.dark-theme .bg-slate-50,
+.dark-theme .bg-slate-100,
+.dark-theme .dark\:bg-slate-800,
+.dark-theme .dark\:bg-slate-850,
+.dark-theme .bg-slate-800,
+.dark-theme .bg-slate-850 {
+  background-color: #123354 !important;
+}
+
+.dark-theme .bg-gray-100,
+.dark-theme .dark\:bg-slate-950\/40,
+.dark-theme .dark\:bg-slate-950\/50,
+.dark-theme .dark\:bg-slate-950\/20,
+.dark-theme .dark\:bg-slate-900\/50,
+.dark-theme .dark\:bg-slate-900\/45,
+.dark-theme .dark\:bg-slate-900\/35,
+.dark-theme .dark\:bg-slate-900\/20,
+.dark-theme .dark\:bg-\[#010915\] {
+  background-color: #163f69 !important;
+}
+
+.dark-theme .border-gray-100,
+.dark-theme .border-gray-200,
+.dark-theme .border-slate-100,
+.dark-theme .border-slate-200,
+.dark-theme .border-municipality-accent,
+.dark-theme .dark\:border-slate-800,
+.dark-theme .border-slate-800,
+.dark-theme .dark\:border-slate-700,
+.dark-theme .dark\:border-gray-800,
+.dark-theme .border-gray-800 {
+  border-color: #1f4c7d !important;
+}
+
+.dark-theme .border-gray-300,
+.dark-theme .border-dashed {
+  border-color: #163f69 !important;
+}
+
+.dark-theme .bg-municipality-light {
+  background-color: #0d2036 !important;
+}
+
+.dark-theme .text-municipality-blue,
+.dark-theme .text-slate-900,
+.dark-theme .text-slate-800,
+.dark-theme .text-gray-900,
+.dark-theme .text-gray-800,
+.dark-theme .text-gray-700 {
+  color: #f1f5f9 !important;
+}
+
+.dark-theme .text-gray-500,
+.dark-theme .text-gray-400,
+.dark-theme .text-slate-500,
+.dark-theme .text-slate-600 {
+  color: #94a3b8 !important;
+}
+
+.dark-theme .text-slate-700 {
+  color: #cbd5e1 !important;
+}
+
+.dark-theme .municipal-card {
+  background-color: #0e2c4d !important;
+  border-color: #163f69 !important;
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.65), 0 0 1px 1px rgba(255,255,255,0.06) !important;
+}
+
+.dark-theme .municipal-input,
+.dark-theme input:not(#complaint-preview-modal input),
+.dark-theme select,
+.dark-theme textarea {
+  background-color: #123354 !important;
+  border-color: #163f69 !important;
+  color: #ffffff !important;
+}
+
+/* Let option elements render with native browser styling so that background and text contrast is properly handled in both dark and light OS presets */
+
+/* Generic high fidelity background and text color shifts for light backdrops under dark theme */
+.dark-theme .bg-green-50,
+.dark-theme .bg-emerald-50,
+.dark-theme .bg-emerald-100 {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  color: #34d399 !important;
+}
+
+.dark-theme .bg-blue-50,
+.dark-theme .bg-sky-50 {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: #60a5fa !important;
+}
+
+.dark-theme .bg-amber-50,
+.dark-theme .bg-yellow-50 {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+  color: #fbbf24 !important;
+}
+
+.dark-theme .bg-red-50,
+.dark-theme .bg-rose-50 {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  color: #fca5a5 !important;
+}
+
+.dark-theme .text-green-700,
+.dark-theme .text-emerald-700 {
+  color: #34d399 !important;
+}
+
+.dark-theme .text-blue-700,
+.dark-theme .text-sky-700 {
+  color: #60a5fa !important;
+}
+
+.dark-theme .text-amber-700,
+.dark-theme .text-yellow-700 {
+  color: #fbbf24 !important;
+}
+
+.dark-theme .text-red-750,
+.dark-theme .text-red-700 {
+  color: #fca5a5 !important;
+}
+
+.dark-theme .border-green-600,
+.dark-theme .border-emerald-600 {
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+.dark-theme .border-blue-600,
+.dark-theme .border-sky-600 {
+  border-color: rgba(59, 130, 246, 0.4) !important;
+}
+
+.dark-theme .border-amber-600,
+.dark-theme .border-yellow-600 {
+  border-color: rgba(245, 158, 11, 0.4) !important;
+}
+
+.dark-theme .border-red-650,
+.dark-theme .border-red-600 {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+.dark-theme .municipal-input:focus,
+.dark-theme input:focus,
+.dark-theme select:focus,
+.dark-theme textarea:focus {
+  border-color: #c5a028 !important;
+}
+
+.dark-theme header {
+  background-color: #0e2c4d !important;
+  border-bottom-color: #163f69 !important;
+}
+
+.dark-theme footer {
+  background-color: #0e2c4d !important;
+  border-top-color: #163f69 !important;
+}
+
+.dark-theme .bg-sky-50 {
+  background-color: #1e293b !important;
+  color: #38bdf8 !important;
+}
+
+.dark-theme .text-sky-800 {
+  color: #38bdf8 !important;
+}
+
+.dark-theme .divide-y > :not([hidden]) ~ :not([hidden]) {
+  border-color: #1e293b !important;
+}
+
+.dark-theme .hover\:bg-gray-50:hover,
+.dark-theme .hover\:bg-slate-50:hover {
+  background-color: #1e293b !important;
+}
+
+/* ABSOLUTE PRESERVE FOR OFFICIAL A4 PREVIEWS / PRINT DOCUMENTS */
+/* This ensures that all official report sheets, margins, fonts, fields remain clean white with black text regardless of dark mode */
+#complaint-preview-modal,
+[id^="field-report-canvas-"],
+[id^="stats-report-canvas-"],
+#note-current-preview,
+[id^="note-"],
+#complaint-preview-modal *,
+[id^="field-report-canvas-"] *,
+[id^="stats-report-canvas-"] *,
+#note-current-preview *,
+[id^="note-"] * {
+  color-scheme: light !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* Specific document layout overrides to absolute clean white and slate text */
+#complaint-preview-modal,
+[id^="field-report-canvas-"],
+[id^="stats-report-canvas-"],
+#note-current-preview,
+[id^="note-"].bg-white,
+.dark-theme #complaint-preview-modal,
+.dark-theme [id^="field-report-canvas-"],
+.dark-theme [id^="stats-report-canvas-"],
+.dark-theme #note-current-preview,
+.dark-theme [id^="note-"].bg-white {
+  background-color: #ffffff !important;
+  color: #0b0f19 !important;
+  border-color: #000000 !important;
+}
+
+#complaint-preview-modal p,
+#complaint-preview-modal span,
+#complaint-preview-modal h1,
+#complaint-preview-modal h2,
+#complaint-preview-modal h3,
+#complaint-preview-modal h4,
+#complaint-preview-modal td,
+#complaint-preview-modal th,
+#complaint-preview-modal label,
+#complaint-preview-modal table,
+#complaint-preview-modal div,
+#complaint-preview-modal input,
+#complaint-preview-modal select,
+#complaint-preview-modal textarea,
+[id^="field-report-canvas-"] p,
+[id^="field-report-canvas-"] span,
+[id^="field-report-canvas-"] h1,
+[id^="field-report-canvas-"] h2,
+[id^="field-report-canvas-"] h3,
+[id^="field-report-canvas-"] h4,
+[id^="field-report-canvas-"] td,
+[id^="field-report-canvas-"] th,
+[id^="field-report-canvas-"] label,
+[id^="field-report-canvas-"] table,
+[id^="field-report-canvas-"] div,
+[id^="field-report-canvas-"] input,
+[id^="field-report-canvas-"] select,
+[id^="field-report-canvas-"] textarea,
+[id^="stats-report-canvas-"] p,
+[id^="stats-report-canvas-"] span,
+[id^="stats-report-canvas-"] h1,
+[id^="stats-report-canvas-"] h2,
+[id^="stats-report-canvas-"] h3,
+[id^="stats-report-canvas-"] h4,
+[id^="stats-report-canvas-"] td,
+[id^="stats-report-canvas-"] th,
+[id^="stats-report-canvas-"] label,
+[id^="stats-report-canvas-"] table,
+[id^="stats-report-canvas-"] div,
+[id^="stats-report-canvas-"] input,
+[id^="stats-report-canvas-"] select,
+[id^="stats-report-canvas-"] textarea,
+#note-current-preview p,
+#note-current-preview span,
+#note-current-preview h1,
+#note-current-preview h2,
+#note-current-preview h3,
+#note-current-preview h4,
+#note-current-preview div,
+[id^="note-"] p,
+[id^="note-"] span,
+[id^="note-"] h1,
+[id^="note-"] h2,
+[id^="note-"] h3,
+[id^="note-"] h4,
+[id^="note-"] div,
+.dark-theme #complaint-preview-modal p,
+.dark-theme #complaint-preview-modal span,
+.dark-theme #complaint-preview-modal h1,
+.dark-theme #complaint-preview-modal h2,
+.dark-theme #complaint-preview-modal h3,
+.dark-theme #complaint-preview-modal h4,
+.dark-theme #complaint-preview-modal td,
+.dark-theme #complaint-preview-modal th,
+.dark-theme #complaint-preview-modal label,
+.dark-theme #complaint-preview-modal table,
+.dark-theme #complaint-preview-modal div,
+.dark-theme #complaint-preview-modal input,
+.dark-theme #complaint-preview-modal select,
+.dark-theme #complaint-preview-modal textarea,
+.dark-theme [id^="field-report-canvas-"] p,
+.dark-theme [id^="field-report-canvas-"] span,
+.dark-theme [id^="field-report-canvas-"] h1,
+.dark-theme [id^="field-report-canvas-"] h2,
+.dark-theme [id^="field-report-canvas-"] h3,
+.dark-theme [id^="field-report-canvas-"] h4,
+.dark-theme [id^="field-report-canvas-"] td,
+.dark-theme [id^="field-report-canvas-"] th,
+.dark-theme [id^="field-report-canvas-"] label,
+.dark-theme [id^="field-report-canvas-"] table,
+.dark-theme [id^="field-report-canvas-"] div,
+.dark-theme [id^="field-report-canvas-"] input,
+.dark-theme [id^="field-report-canvas-"] select,
+.dark-theme [id^="field-report-canvas-"] textarea,
+.dark-theme [id^="stats-report-canvas-"] p,
+.dark-theme [id^="stats-report-canvas-"] span,
+.dark-theme [id^="stats-report-canvas-"] h1,
+.dark-theme [id^="stats-report-canvas-"] h2,
+.dark-theme [id^="stats-report-canvas-"] h3,
+.dark-theme [id^="stats-report-canvas-"] h4,
+.dark-theme [id^="stats-report-canvas-"] td,
+.dark-theme [id^="stats-report-canvas-"] th,
+.dark-theme [id^="stats-report-canvas-"] label,
+.dark-theme [id^="stats-report-canvas-"] table,
+.dark-theme [id^="stats-report-canvas-"] div,
+.dark-theme [id^="stats-report-canvas-"] input,
+.dark-theme [id^="stats-report-canvas-"] select,
+.dark-theme [id^="stats-report-canvas-"] textarea,
+.dark-theme #note-current-preview p,
+.dark-theme #note-current-preview span,
+.dark-theme #note-current-preview h1,
+.dark-theme #note-current-preview h2,
+.dark-theme #note-current-preview h3,
+.dark-theme #note-current-preview h4,
+.dark-theme #note-current-preview div,
+.dark-theme [id^="note-"] p,
+.dark-theme [id^="note-"] span,
+.dark-theme [id^="note-"] h1,
+.dark-theme [id^="note-"] h2,
+.dark-theme [id^="note-"] h3,
+.dark-theme [id^="note-"] h4,
+.dark-theme [id^="note-"] div {
+  color: #0b0f19 !important;
+  border-color: #0b0f19 !important;
+}
+
+/* Background Force Overrides inside these preview containers to prevent styling black */
+#complaint-preview-modal .bg-white,
+[id^="field-report-canvas-"] .bg-white,
+[id^="stats-report-canvas-"] .bg-white,
+#note-current-preview .bg-white,
+[id^="note-"] .bg-white,
+.dark-theme #complaint-preview-modal .bg-white,
+.dark-theme [id^="field-report-canvas-"] .bg-white,
+.dark-theme [id^="stats-report-canvas-"] .bg-white,
+.dark-theme #note-current-preview .bg-white,
+.dark-theme [id^="note-"] .bg-white {
+  background-color: #ffffff !important;
+}
+
+#complaint-preview-modal .bg-gray-50,
+[id^="field-report-canvas-"] .bg-gray-50,
+[id^="stats-report-canvas-"] .bg-gray-50,
+#complaint-preview-modal .bg-slate-50,
+[id^="field-report-canvas-"] .bg-slate-50,
+[id^="stats-report-canvas-"] .bg-slate-50,
+#note-current-preview .bg-gray-50,
+[id^="note-"] .bg-gray-50,
+.dark-theme #complaint-preview-modal .bg-gray-50,
+.dark-theme [id^="field-report-canvas-"] .bg-gray-50,
+.dark-theme [id^="stats-report-canvas-"] .bg-gray-50,
+.dark-theme #complaint-preview-modal .bg-slate-50,
+.dark-theme [id^="field-report-canvas-"] .bg-slate-50,
+.dark-theme [id^="stats-report-canvas-"] .bg-slate-50,
+.dark-theme #note-current-preview .bg-gray-50,
+.dark-theme [id^="note-"] .bg-gray-50 {
+  background-color: #f8fafc !important;
+}
+
+/* Force standard light slate columns in tables */
+#complaint-preview-modal .bg-slate-100,
+[id^="field-report-canvas-"] .bg-slate-100,
+[id^="stats-report-canvas-"] .bg-slate-100,
+#complaint-preview-modal .bg-slate-200,
+[id^="field-report-canvas-"] .bg-slate-200,
+[id^="stats-report-canvas-"] .bg-slate-200,
+#complaint-preview-modal .bg-slate-300,
+[id^="field-report-canvas-"] .bg-slate-300,
+[id^="stats-report-canvas-"] .bg-slate-300,
+.dark-theme #complaint-preview-modal .bg-slate-100,
+.dark-theme [id^="field-report-canvas-"] .bg-slate-100,
+.dark-theme [id^="stats-report-canvas-"] .bg-slate-100,
+.dark-theme #complaint-preview-modal .bg-slate-200,
+.dark-theme [id^="field-report-canvas-"] .bg-slate-200,
+.dark-theme [id^="stats-report-canvas-"] .bg-slate-200,
+.dark-theme #complaint-preview-modal .bg-slate-300,
+.dark-theme [id^="field-report-canvas-"] .bg-slate-300,
+.dark-theme [id^="stats-report-canvas-"] .bg-slate-300 {
+  background-color: #f1f5f9 !important;
+}
+
+/* Badges inside templates must keep beautiful legible colors */
+#complaint-preview-modal .bg-green-100,
+[id^="field-report-canvas-"] .bg-green-105,
+[id^="field-report-canvas-"] .bg-green-100,
+[id^="stats-report-canvas-"] .bg-green-100,
+#note-current-preview .bg-green-100,
+[id^="note-"] .bg-green-100,
+.dark-theme #complaint-preview-modal .bg-green-100,
+.dark-theme [id^="field-report-canvas-"] .bg-green-100,
+.dark-theme [id^="stats-report-canvas-"] .bg-green-100,
+.dark-theme #note-current-preview .bg-green-100,
+.dark-theme [id^="note-"] .bg-green-100 {
+  background-color: #d1fae5 !important;
+  color: #065f46 !important;
+}
+
+#complaint-preview-modal .bg-amber-100,
+[id^="field-report-canvas-"] .bg-amber-105,
+[id^="field-report-canvas-"] .bg-amber-100,
+[id^="stats-report-canvas-"] .bg-amber-100,
+#note-current-preview .bg-amber-100,
+[id^="note-"] .bg-amber-100,
+.dark-theme #complaint-preview-modal .bg-amber-100,
+.dark-theme [id^="field-report-canvas-"] .bg-amber-100,
+.dark-theme [id^="stats-report-canvas-"] .bg-amber-100,
+.dark-theme #note-current-preview .bg-amber-100,
+.dark-theme [id^="note-"] .bg-amber-100 {
+  background-color: #fef3c7 !important;
+  color: #92400e !important;
+}
+
+/* Style inputs inside the canvas so they look like flat clean fields with white backgrounds and black writing */
+#complaint-preview-modal input,
+#complaint-preview-modal select,
+#complaint-preview-modal textarea,
+[id^="field-report-canvas-"] input,
+[id^="field-report-canvas-"] select,
+[id^="field-report-canvas-"] textarea,
+[id^="stats-report-canvas-"] input,
+[id^="stats-report-canvas-"] select,
+[id^="stats-report-canvas-"] textarea,
+.dark-theme #complaint-preview-modal input,
+.dark-theme #complaint-preview-modal select,
+.dark-theme #complaint-preview-modal textarea,
+.dark-theme [id^="field-report-canvas-"] input,
+.dark-theme [id^="field-report-canvas-"] select,
+.dark-theme [id^="field-report-canvas-"] textarea,
+.dark-theme [id^="stats-report-canvas-"] input,
+.dark-theme [id^="stats-report-canvas-"] select,
+.dark-theme [id^="stats-report-canvas-"] textarea {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+/* Ensure inputs inside tables or grid sheets are transparent and completely flat, preventing ugly dark-mode inputs or borders */
+[id^="stats-report-canvas-"] input.bg-transparent,
+.dark-theme [id^="stats-report-canvas-"] input.bg-transparent,
+[id^="field-report-canvas-"] input.bg-transparent,
+.dark-theme [id^="field-report-canvas-"] input.bg-transparent,
+[id^="stats-report-canvas-"] .flex input,
+.dark-theme [id^="stats-report-canvas-"] .flex input,
+[id^="field-report-canvas-"] .flex input,
+.dark-theme [id^="field-report-canvas-"] .flex input {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: #0b0f19 !important;
+}
+
+/* Ensure select triggers inside preview elements stay light-colored and readable in dark mode */
+.aesthetic-select-trigger,
+.dark-theme .aesthetic-select-trigger {
+  color: #0b0f19 !important;
+}
+
+/* Beautiful High Contrast Select dropdown option list, optgroups, and list components */
+select option {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+}
+
+.dark-theme select {
+  background-color: #123354 !important;
+  border-color: #163f69 !important;
+  color: #ffffff !important;
+}
+
+.dark-theme select option {
+  background-color: #123354 !important;
+  color: #ffffff !important;
+}
+
+/* Fix browser standard autofill text contrast issues */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: #111827 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark-theme input:-webkit-autofill,
+.dark-theme input:-webkit-autofill:hover, 
+.dark-theme input:-webkit-autofill:focus,
+.dark-theme textarea:-webkit-autofill,
+.dark-theme textarea:-webkit-autofill:hover,
+.dark-theme textarea:-webkit-autofill:focus,
+.dark-theme select:-webkit-autofill,
+.dark-theme select:-webkit-autofill:hover,
+.dark-theme select:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0px 1000px #1a2333 inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Sidebar navigation high contrast styling under dark theme */
+.dark-theme aside,
+.dark-theme .bg-municipality-blue {
+  background-color: #0e2c4d !important; /* Unified deep kohl-navy */
+  border-left: 1px solid #163f69 !important;
+}
+
+.dark-theme aside button {
+  color: rgba(241, 245, 249, 0.8) !important;
+}
+
+.dark-theme aside button:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+.dark-theme aside button.bg-white {
+  background-color: #163f69 !important;
+  color: #c5a028 !important; /* Accent gold text for active button */
+  box-shadow: 0 4px 12px rgba(197, 160, 40, 0.15) !important;
+}
+
+.dark-theme aside button.bg-white svg {
+  color: #c5a028 !important; /* Gold active icon */
+}
+
+/* Dashboard Progress bar & Ratio Panel text readability overrides */
+.dark-theme .text-slate-800 {
+  color: #f8fafc !important; /* Crisp white titles */
+}
+
+.dark-theme .text-slate-650 {
+  color: #cbd5e1 !important; /* Crisp details */
+}
+
+.dark-theme .bg-slate-50\/50,
+.dark-theme .bg-slate-50\/40,
+.dark-theme .bg-slate-50\/30 {
+  background-color: rgba(30, 41, 59, 0.70) !important; /* Dark slate card backing */
+}
+
+.dark-theme .bg-slate-100 {
+  background-color: #1e293b !important;
+}
+
+.dark-theme .bg-slate-100.rounded-full {
+  background-color: #334155 !important; /* Explicitly visible progress track */
+}
+
+.dark-theme .text-emerald-650 {
+  color: #4ade80 !important; /* Highly visible emerald green */
+}
+
+/* Solved archives grid card overlays */
+.dark-theme .border-emerald-150 {
+  border-color: rgba(52, 211, 153, 0.25) !important;
+}
+
+.dark-theme .text-indigo-650,
+.dark-theme .text-indigo-700 {
+  color: #c7d2fe !important; /* Soft indigo for text */
+}
+
+.dark-theme .bg-indigo-50 {
+  background-color: rgba(99, 102, 241, 0.15) !important;
+}
+
+.dark-theme .bg-slate-100.rounded {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+/* Alert Area for delayed complaints */
+.dark-theme .from-red-50 {
+  --tw-gradient-from: rgba(220, 38, 38, 0.15) !important;
+}
+
+.dark-theme .to-amber-50 {
+  --tw-gradient-to: rgba(217, 119, 6, 0.15) !important;
+}
+
+.dark-theme .bg-gradient-to-r {
+  background-image: linear-gradient(to left, rgba(217, 119, 6, 0.12), rgba(220, 38, 38, 0.12)) !important;
+}
+
+.dark-theme .border-red-105,
+.dark-theme .border-red-100 {
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.dark-theme .bg-white\/80 {
+  background-color: rgba(18, 25, 38, 0.95) !important;
+}
+
+.dark-theme .text-red-950 {
+  color: #fca5a5 !important;
+}
+
+/* Theme Scrollbars */
+.dark-theme ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.dark-theme ::-webkit-scrollbar-track {
+  background: #0b0f19;
+}
+.dark-theme ::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 9999px;
+}
+.dark-theme ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Custom super visible scrollbar for modals */
+.beautiful-scrollbar::-webkit-scrollbar {
+  width: 12px !important;
+  height: 12px !important;
+  display: block !important;
+}
+.beautiful-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9 !important;
+  border-radius: 10px !important;
+}
+.beautiful-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1 !important;
+  border: 3px solid #f1f5f9 !important;
+  border-radius: 10px !important;
+}
+.beautiful-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8 !important;
+}
+.beautiful-scrollbar {
+  scrollbar-width: auto !important;
+  scrollbar-color: #cbd5e1 #f1f5f9 !important;
+}
+
+/* Core Dark theme table details */
+.dark-theme th,
+.dark-theme td {
+  color: #f1f5f9 !important;
+  border-color: #1e293b !important;
+}
+
+.dark-theme .text-red-700,
+.dark-theme .text-red-800,
+.dark-theme .text-red-900 {
+  color: #fca5a5 !important;
+}
+
+.dark-theme .text-green-700,
+.dark-theme .text-green-800,
+.dark-theme .text-emerald-700,
+.dark-theme .text-emerald-800 {
+  color: #86efac !important;
+}
+
+.dark-theme .text-amber-700,
+.dark-theme .text-amber-800,
+.dark-theme .text-yellow-700 {
+  color: #fcd34d !important;
+}
+
+.dark-theme .bg-red-50,
+.dark-theme .bg-red-50\/30 {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+.dark-theme .bg-green-50,
+.dark-theme .bg-green-50\/30,
+.dark-theme .bg-emerald-50 {
+  background-color: rgba(34, 197, 94, 0.15) !important;
+}
+
+.dark-theme .bg-amber-50,
+.dark-theme .bg-amber-50\/30 {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+}
+
+/* HIGH FIDELITY DIRECT PRINT STYLING FOR A4 SIMULATION */
+@media print {
+  /* Hide the entire website container body elements */
+  html, body {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide headers, sidebars, dashboard navigation tabs, control buttons, 
+     archives list, and forms in both sub-tabs */
+  header, 
+  footer, 
+  aside, 
+  nav, 
+  button, 
+  ul, 
+  ol, 
+  form,
+  .print\:hidden, 
+  .no-print, 
+  [role="tablist"],
+  /* Hide customizer edit panels */
+  .p-5.rounded-2xl.space-y-4,
+  .p-5.rounded-2xl,
+  /* Hide dynamic charts and logs list */
+  .space-y-6.pt-6, 
+  .space-y-6.pt-10,
+  /* Hide forms sidebar on left */
+  .xl\:grid-cols-12 > div.xl\:col-span-4,
+  .xl\:grid-cols-12 > div.xl\:col-span-5 {
+    display: none !important;
+  }
+
+  /* Reset layout structure columns to full screen */
+  .xl\:grid-cols-12 {
+    display: block !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Specific hide overrides depending on active document */
+  body.printing-active-stats #field-report-canvas-preview {
+    display: none !important;
+  }
+  body.printing-active-field #stats-report-canvas-preview {
+    display: none !important;
+  }
+
+  /* Expand target A4 sheet to full fit */
+  #stats-report-canvas-preview,
+  #field-report-canvas-preview {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    transform: none !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Outer double border simulation should conform to full printable bounds */
+  #stats-report-canvas-preview > div,
+  #field-report-canvas-preview > div {
+    border: 4px double #000000 !important;
+    padding: 1.2cm !important;
+    min-height: 28cm !important;
+    box-sizing: border-box !important;
+    background-color: #ffffff !important;
+  }
+
+  /* Clean up inputs and selects styled as plain text output inside the printed templates */
+  input, select, textarea {
+    border: none !important;
+    background-color: transparent !important;
+    color: #000000 !important;
+    font-weight: 900 !important;
+    box-shadow: none !important;
+    appearance: none !important;
+    outline: none !important;
+    padding: 1px !important;
+    text-align: center !important;
+  }
+
+  /* Override color highlight helpers */
+  .text-indigo-900,
+  .text-teal-800,
+  .text-rose-700,
+  .text-sky-900,
+  .text-blue-700,
+  .text-slate-800,
+  .text-slate-950,
+  .text-slate-955 {
+    color: #000000 !important;
+  }
+
+  .bg-slate-50,
+  .bg-slate-100,
+  .bg-slate-200,
+  .bg-gray-50,
+  .bg-red-50,
+  .bg-amber-50,
+  .bg-blue-50,
+  .bg-sky-50 {
+    background-color: transparent !important;
+  }
+
+  .border-slate-300,
+  .border-slate-400,
+  .border-slate-600,
+  .border-slate-800,
+  .border-slate-900 {
+    border-color: #000000 !important;
+  }
+}
+
+/* ABSOLUTE FORCE-PRESERVATION OF LIGHT DAY-MODE GRAPHICS FOR OFFICIAL PREVIEWS & PRINT SHEETS */
+/* This block is placed at the bottom of the stylesheet to override any dark theme rules cleanly */
+
+#complaint-preview-modal,
+[id^="field-report-canvas-"],
+[id^="stats-report-canvas-"],
+#note-current-preview,
+[id^="note-"],
+#cloned-complaint-preview-modal {
+  background-color: #ffffff !important;
+  color: #0b0f19 !important;
+  color-scheme: light !important;
+}
+
+.dark-theme #complaint-preview-modal,
+.dark-theme [id^="field-report-canvas-"],
+.dark-theme [id^="stats-report-canvas-"],
+.dark-theme #note-current-preview,
+.dark-theme [id^="note-"],
+.dark-theme #cloned-complaint-preview-modal {
+  background-color: #ffffff !important;
+  color: #0b0f19 !important;
+}
+
+/* Force dark text and clean dark borders for all nested text elements inside these canvas elements in dark theme */
+.dark-theme #complaint-preview-modal p,
+.dark-theme #complaint-preview-modal span,
+.dark-theme #complaint-preview-modal h1,
+.dark-theme #complaint-preview-modal h2,
+.dark-theme #complaint-preview-modal h3,
+.dark-theme #complaint-preview-modal h4,
+.dark-theme #complaint-preview-modal td,
+.dark-theme #complaint-preview-modal th,
+.dark-theme #complaint-preview-modal label,
+.dark-theme #complaint-preview-modal table,
+.dark-theme #complaint-preview-modal div,
+.dark-theme #complaint-preview-modal input,
+.dark-theme #complaint-preview-modal select,
+.dark-theme #complaint-preview-modal textarea,
+
+.dark-theme [id^="field-report-canvas-"] p,
+.dark-theme [id^="field-report-canvas-"] span,
+.dark-theme [id^="field-report-canvas-"] h1,
+.dark-theme [id^="field-report-canvas-"] h2,
+.dark-theme [id^="field-report-canvas-"] h3,
+.dark-theme [id^="field-report-canvas-"] h4,
+.dark-theme [id^="field-report-canvas-"] td,
+.dark-theme [id^="field-report-canvas-"] th,
+.dark-theme [id^="field-report-canvas-"] label,
+.dark-theme [id^="field-report-canvas-"] table,
+.dark-theme [id^="field-report-canvas-"] div,
+.dark-theme [id^="field-report-canvas-"] input,
+.dark-theme [id^="field-report-canvas-"] select,
+.dark-theme [id^="field-report-canvas-"] textarea,
+
+.dark-theme [id^="stats-report-canvas-"] p,
+.dark-theme [id^="stats-report-canvas-"] span,
+.dark-theme [id^="stats-report-canvas-"] h1,
+.dark-theme [id^="stats-report-canvas-"] h2,
+.dark-theme [id^="stats-report-canvas-"] h3,
+.dark-theme [id^="stats-report-canvas-"] h4,
+.dark-theme [id^="stats-report-canvas-"] td,
+.dark-theme [id^="stats-report-canvas-"] th,
+.dark-theme [id^="stats-report-canvas-"] label,
+.dark-theme [id^="stats-report-canvas-"] table,
+.dark-theme [id^="stats-report-canvas-"] div,
+.dark-theme [id^="stats-report-canvas-"] input,
+.dark-theme [id^="stats-report-canvas-"] select,
+.dark-theme [id^="stats-report-canvas-"] textarea,
+
+.dark-theme #note-current-preview p,
+.dark-theme #note-current-preview span,
+.dark-theme #note-current-preview h1,
+.dark-theme #note-current-preview h2,
+.dark-theme #note-current-preview h3,
+.dark-theme #note-current-preview h4,
+.dark-theme #note-current-preview div,
+
+.dark-theme [id^="note-"] p,
+.dark-theme [id^="note-"] span,
+.dark-theme [id^="note-"] h1,
+.dark-theme [id^="note-"] h2,
+.dark-theme [id^="note-"] h3,
+.dark-theme [id^="note-"] h4,
+.dark-theme [id^="note-"] div {
+  color: #0b0f19 !important;
+  border-color: #0f172a !important;
+}
+
+/* Solid background forces */
+.dark-theme #complaint-preview-modal .bg-white,
+.dark-theme [id^="field-report-canvas-"] .bg-white,
+.dark-theme [id^="stats-report-canvas-"] .bg-white,
+.dark-theme #note-current-preview .bg-white,
+.dark-theme [id^="note-"] .bg-white {
+  background-color: #ffffff !important;
+}
+
+.dark-theme #complaint-preview-modal .bg-gray-50,
+.dark-theme [id^="field-report-canvas-"] .bg-gray-50,
+.dark-theme [id^="stats-report-canvas-"] .bg-gray-50,
+.dark-theme #complaint-preview-modal .bg-slate-50,
+.dark-theme [id^="field-report-canvas-"] .bg-slate-50,
+.dark-theme [id^="stats-report-canvas-"] .bg-slate-50,
+.dark-theme #note-current-preview .bg-gray-50,
+.dark-theme [id^="note-"] .bg-gray-50 {
+  background-color: #f8fafc !important;
+}
+
+.dark-theme #complaint-preview-modal .bg-slate-100,
+.dark-theme [id^="field-report-canvas-"] .bg-slate-100,
+.dark-theme [id^="stats-report-canvas-"] .bg-slate-100,
+.dark-theme #complaint-preview-modal .bg-slate-200,
+.dark-theme [id^="field-report-canvas-"] .bg-slate-200,
+.dark-theme [id^="stats-report-canvas-"] .bg-slate-200 {
+  background-color: #f1f5f9 !important;
+}
+
+/* Specific component elements like table cells */
+.dark-theme [id^="stats-report-canvas-"] th,
+.dark-theme [id^="stats-report-canvas-"] td,
+.dark-theme [id^="field-report-canvas-"] th,
+.dark-theme [id^="field-report-canvas-"] td,
+.dark-theme #complaint-preview-modal th,
+.dark-theme #complaint-preview-modal td {
+  color: #0b0f19 !important;
+  border-color: #000000 !important;
+  background-color: transparent !important;
+}
+
+/* Inputs and interactive elements inside the canvas sheet in dark mode must look like crisp white elements with black lettering */
+.dark-theme [id^="stats-report-canvas-"] input,
+.dark-theme [id^="stats-report-canvas-"] select,
+.dark-theme [id^="stats-report-canvas-"] textarea,
+.dark-theme [id^="field-report-canvas-"] input,
+.dark-theme [id^="field-report-canvas-"] select,
+.dark-theme [id^="field-report-canvas-"] textarea {
+  background-color: #ffffff !important;
+  color: #0b0f19 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+.dark-theme [id^="stats-report-canvas-"] input.bg-transparent,
+.dark-theme [id^="field-report-canvas-"] input.bg-transparent,
+.dark-theme [id^="stats-report-canvas-"] .flex input,
+.dark-theme [id^="field-report-canvas-"] .flex input {
+  background-color: transparent !important;
+  color: #0b0f19 !important;
+  border: none !important;
+}
+
+/* Clean text colors in dark mode to match light mode styles */
+.dark-theme [id^="stats-report-canvas-"] .text-municipality-blue,
+.dark-theme [id^="field-report-canvas-"] .text-municipality-blue,
+.dark-theme #complaint-preview-modal .text-municipality-blue {
+  color: #0b1f3c !important;
+}
+.dark-theme [id^="stats-report-canvas-"] .text-municipality-gold,
+.dark-theme [id^="field-report-canvas-"] .text-municipality-gold,
+.dark-theme #complaint-preview-modal .text-municipality-gold {
+  color: #bfa15f !important;
+}
+.dark-theme [id^="stats-report-canvas-"] .text-rose-800,
+.dark-theme [id^="field-report-canvas-"] .text-rose-800 {
+  color: #9f1239 !important;
+}
+.dark-theme [id^="stats-report-canvas-"] .bg-rose-50\/20,
+.dark-theme [id^="stats-report-canvas-"] .bg-amber-50\/20,
+.dark-theme [id^="stats-report-canvas-"] .bg-emerald-50\/20,
+.dark-theme [id^="stats-report-canvas-"] .bg-indigo-50\/20,
+.dark-theme [id^="stats-report-canvas-"] .bg-blue-50\/20 {
+  background-color: rgba(244, 63, 94, 0.05) !important;
+}
+.dark-theme [id^="stats-report-canvas-"] .text-emerald-800,
+.dark-theme [id^="field-report-canvas-"] .text-emerald-800 {
+  color: #065f46 !important;
+}
+.dark-theme [id^="stats-report-canvas-"] .text-indigo-800,
+.dark-theme [id^="field-report-canvas-"] .text-indigo-800 {
+  color: #3730a3 !important;
+}
+.dark-theme [id^="stats-report-canvas-"] .text-blue-800,
+.dark-theme [id^="field-report-canvas-"] .text-blue-800 {
+  color: #075985 !important;
+}
+.dark-theme [id^="stats-report-canvas-"] .text-slate-800,
+.dark-theme [id^="field-report-canvas-"] .text-slate-800,
+.dark-theme #complaint-preview-modal .text-slate-800 {
+  color: #1e293b !important;
+}
+.dark-theme [id^="stats-report-canvas-"] .text-slate-500,
+.dark-theme [id^="field-report-canvas-"] .text-slate-500,
+.dark-theme #complaint-preview-modal .text-slate-500 {
+  color: #64748b !important;
+}
+.dark-theme [id^="stats-report-canvas-"] .text-gray-500,
+.dark-theme [id^="field-report-canvas-"] .text-gray-500,
+.dark-theme #complaint-preview-modal .text-gray-500 {
+  color: #6b7280 !important;
+}
+.dark-theme [id^="stats-report-canvas-"] .text-slate-900,
+.dark-theme [id^="field-report-canvas-"] .text-slate-900,
+.dark-theme #complaint-preview-modal .text-slate-900 {
+  color: #0f172a !important;
+}
+.dark-theme [id^="stats-report-canvas-"] .text-slate-950,
+.dark-theme [id^="field-report-canvas-"] .text-slate-950,
+.dark-theme #complaint-preview-modal .text-slate-950 {
+  color: #020617 !important;
+}
+
+/* Custom Statistics Form Group Cards with highly distinctive colors to solve the monochromatic/night-vision look */
+
+/* 1. Gold CARD */
+.stat-card-gold {
+  background-color: #fffbeb !important;
+  border: 1px solid #fde047 !important;
+  border-right: 5px solid #d97706 !important;
+}
+.dark-theme .stat-card-gold {
+  background-color: #17120a !important;
+  border: 1px solid #451a03 !important;
+  border-right: 5px solid #f59e0b !important;
+}
+.stat-card-gold label,
+.stat-card-gold span {
+  color: #b45309 !important;
+}
+.dark-theme .stat-card-gold label,
+.dark-theme .stat-card-gold span {
+  color: #fbbf24 !important;
+}
+.dark-theme .stat-card-gold .stat-title {
+  color: #f59e0b !important;
+}
+.stat-card-gold input {
+  background-color: #ffffff !important;
+  border: 2px solid #fde047 !important;
+  color: #451a03 !important;
+}
+.dark-theme .stat-card-gold input {
+  background-color: #1e150a !important;
+  border: 2px solid #d97706 !important;
+  color: #fef08a !important;
+}
+
+/* 2. Red CARD */
+.stat-card-red {
+  background-color: #fef2f2 !important;
+  border: 1px solid #fca5a5 !important;
+  border-right: 5px solid #ef4444 !important;
+}
+.dark-theme .stat-card-red {
+  background-color: #1c0e0f !important;
+  border: 1px solid #5c1d1d !important;
+  border-right: 5px solid #f87171 !important;
+}
+.stat-card-red label,
+.stat-card-red span {
+  color: #b91c1c !important;
+}
+.dark-theme .stat-card-red label,
+.dark-theme .stat-card-red span {
+  color: #fca5a5 !important;
+}
+.dark-theme .stat-card-red .stat-title {
+  color: #f87171 !important;
+}
+.stat-card-red input {
+  background-color: #ffffff !important;
+  border: 2px solid #fca5a5 !important;
+  color: #7f1d1d !important;
+}
+.dark-theme .stat-card-red input {
+  background-color: #241113 !important;
+  border: 2px solid #ef4444 !important;
+  color: #fca5a5 !important;
+}
+
+/* 3. Green CARD */
+.stat-card-green {
+  background-color: #f0fdf4 !important;
+  border: 1px solid #bbf7d0 !important;
+  border-right: 5px solid #10b981 !important;
+}
+.dark-theme .stat-card-green {
+  background-color: #0c1a12 !important;
+  border: 1px solid #064e3b !important;
+  border-right: 5px solid #34d399 !important;
+}
+.stat-card-green label,
+.stat-card-green span {
+  color: #15803d !important;
+}
+.dark-theme .stat-card-green label,
+.dark-theme .stat-card-green span {
+  color: #a7f3d0 !important;
+}
+.dark-theme .stat-card-green .stat-title {
+  color: #34d399 !important;
+}
+.stat-card-green input {
+  background-color: #ffffff !important;
+  border: 2px solid #86efac !important;
+  color: #064e3b !important;
+}
+.dark-theme .stat-card-green input {
+  background-color: #0e2017 !important;
+  border: 2px solid #10b981 !important;
+  color: #a7f3d0 !important;
+}
+
+/* 4. Purple CARD */
+.stat-card-purple {
+  background-color: #faf5ff !important;
+  border: 1px solid #e9d5ff !important;
+  border-right: 5px solid #8b5cf6 !important;
+}
+.dark-theme .stat-card-purple {
+  background-color: #140e1b !important;
+  border: 1px solid #3b0764 !important;
+  border-right: 5px solid #a78bfa !important;
+}
+.stat-card-purple label,
+.stat-card-purple span {
+  color: #6d28d9 !important;
+}
+.dark-theme .stat-card-purple label,
+.dark-theme .stat-card-purple span {
+  color: #e9d5ff !important;
+}
+.dark-theme .stat-card-purple .stat-title {
+  color: #a78bfa !important;
+}
+.stat-card-purple input {
+  background-color: #ffffff !important;
+  border: 2px solid #d8b4fe !important;
+  color: #3b0764 !important;
+}
+.dark-theme .stat-card-purple input {
+  background-color: #1a1224 !important;
+  border: 2px solid #8b5cf6 !important;
+  color: #e9d5ff !important;
+}
+
+/* 5. Blue CARD */
+.stat-card-blue {
+  background-color: #f0f9ff !important;
+  border: 1px solid #bae6fd !important;
+  border-right: 5px solid #0284c7 !important;
+}
+.dark-theme .stat-card-blue {
+  background-color: #09141f !important;
+  border: 1px solid #0c4a6e !important;
+  border-right: 5px solid #38bdf8 !important;
+}
+.stat-card-blue label,
+.stat-card-blue span {
+  color: #0369a1 !important;
+}
+.dark-theme .stat-card-blue label,
+.dark-theme .stat-card-blue span {
+  color: #bae6fd !important;
+}
+.dark-theme .stat-card-blue .stat-title {
+  color: #38bdf8 !important;
+}
+.stat-card-blue input {
+  background-color: #ffffff !important;
+  border: 2px solid #7dd3fc !important;
+  color: #0c4a6e !important;
+}
+.dark-theme .stat-card-blue input {
+  background-color: #0e1b29 !important;
+  border: 2px solid #0284c7 !important;
+  color: #bae6fd !important;
+}
+
+/* 6. Emerald CARD */
+.stat-card-emerald {
+  background-color: #ecfdf5 !important;
+  border: 1px solid #a7f3d0 !important;
+  border-right: 5px solid #059669 !important;
+}
+.dark-theme .stat-card-emerald {
+  background-color: #081611 !important;
+  border: 1px solid #064e3b !important;
+  border-right: 5px solid #34d399 !important;
+}
+.stat-card-emerald label,
+.stat-card-emerald p {
+  color: #047857 !important;
+}
+.dark-theme .stat-card-emerald label,
+.dark-theme .stat-card-emerald p {
+  color: #a7f3d0 !important;
+}
+.dark-theme .stat-card-emerald .stat-title {
+  color: #34d399 !important;
+}
+.stat-card-emerald input {
+  background-color: #ffffff !important;
+  border: 2px solid #6ee7b7 !important;
+  color: #064e3b !important;
+  padding: 4px !important;
+}
+.dark-theme .stat-card-emerald input {
+  background-color: #0e241b !important;
+  border: 2px solid #059669 !important;
+  color: #6ee7b7 !important;
+}
+.stat-card-emerald .bg-white,
+.stat-card-emerald .space-y-1 {
+  background-color: #ffffff !important;
+  border-color: #a7f3d0 !important;
+}
+.dark-theme .stat-card-emerald .bg-white,
+.dark-theme .stat-card-emerald .space-y-1 {
+  background-color: #0e241b !important;
+  border-color: #059669 !important;
+}
