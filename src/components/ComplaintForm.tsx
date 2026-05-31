@@ -131,8 +131,32 @@ export default function ComplaintForm({ onSave, settings }: ComplaintFormProps) 
     status: 'pending' as 'pending' | 'done'
   };
 
-  const [formData, setFormData] = useState(initialState);
-  const [previews, setPreviews] = useState<string[]>([]);
+  const [formData, setFormData] = useState(() => {
+    try {
+      const saved = localStorage.getItem('municipal_complaint_formData_draft');
+      return saved ? { ...initialState, ...JSON.parse(saved) } : initialState;
+    } catch {
+      return initialState;
+    }
+  });
+  const [previews, setPreviews] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('municipal_complaint_previews_draft');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Automatically save complaint form draft on input change
+  useEffect(() => {
+    localStorage.setItem('municipal_complaint_formData_draft', JSON.stringify(formData));
+  }, [formData]);
+
+  // Automatically save complaint previews draft on input change
+  useEffect(() => {
+    localStorage.setItem('municipal_complaint_previews_draft', JSON.stringify(previews));
+  }, [previews]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -183,6 +207,8 @@ export default function ComplaintForm({ onSave, settings }: ComplaintFormProps) 
   const resetForm = () => {
     setFormData(initialState);
     setPreviews([]);
+    localStorage.removeItem('municipal_complaint_formData_draft');
+    localStorage.removeItem('municipal_complaint_previews_draft');
   };
 
   const handleSubmit = (e: React.FormEvent) => {

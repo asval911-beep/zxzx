@@ -460,12 +460,12 @@ export default function ComplaintList({ complaints, onDelete, onUpdate }: Compla
               </p>
               
               <div className="pt-4 grid grid-cols-2 gap-3 text-[11px] font-bold">
-                <div className="flex items-center gap-2 truncate bg-slate-50 dark:bg-[#123354] text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-[#163f69]/80 p-2 rounded-lg">
-                  <User size={14} className="text-municipality-gold shrink-0" />
+                <div className="flex items-center gap-2 truncate bg-slate-100 dark:bg-[#123354] text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-[#163f69] p-2 rounded-lg">
+                  <User size={14} className="text-amber-600 dark:text-municipality-gold shrink-0" />
                   <span className="truncate">{comp.inspectorName}</span>
                 </div>
-                <div className="flex items-center gap-2 truncate bg-slate-50 dark:bg-[#123354] text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-[#163f69]/80 p-2 rounded-lg">
-                  <MapPin size={14} className="text-municipality-gold shrink-0" />
+                <div className="flex items-center gap-2 truncate bg-slate-100 dark:bg-[#123354] text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-[#163f69] p-2 rounded-lg">
+                  <MapPin size={14} className="text-amber-600 dark:text-municipality-gold shrink-0" />
                   <span className="truncate">{comp.centerName}</span>
                 </div>
               </div>

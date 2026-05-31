@@ -65,19 +65,42 @@ interface NotesTabProps {
 }
 
 export default function NotesTab({ notes, onSave, onDelete }: NotesTabProps) {
-  const [isAdding, setIsAdding] = useState(false);
-  const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
+  const [isAdding, setIsAdding] = useState(() => {
+    try {
+      const saved = localStorage.getItem('municipal_notes_draft_isAdding');
+      return saved ? JSON.parse(saved) : false;
+    } catch {
+      return false;
+    }
+  });
+
+  const [activeNoteId, setActiveNoteId] = useState<string | null>(() => {
+    try {
+      return localStorage.getItem('municipal_notes_draft_activeNoteId') || null;
+    } catch {
+      return null;
+    }
+  });
+
   const [deletingId, setDeletingId] = useState<string | null>(null);
   
   // Note Form State
-  const [newNote, setNewNote] = useState({ 
-    title: '', 
-    content: '', 
-    color: 'bg-white', 
-    image: '', 
-    drawing: '',
-    fontSize: 16, 
-    appointmentDate: '' 
+  const [newNote, setNewNote] = useState(() => {
+    const defaultState = { 
+      title: '', 
+      content: '', 
+      color: 'bg-white', 
+      image: '', 
+      drawing: '',
+      fontSize: 16, 
+      appointmentDate: '' 
+    };
+    try {
+      const saved = localStorage.getItem('municipal_notes_draft_newNote');
+      return saved ? { ...defaultState, ...JSON.parse(saved) } : defaultState;
+    } catch {
+      return defaultState;
+    }
   });
 
   // Editor Sub-tabs: text editor, smart sketch board, live preview
@@ -91,6 +114,23 @@ export default function NotesTab({ notes, onSave, onDelete }: NotesTabProps) {
   const [paperGrid, setPaperGrid] = useState<'white' | 'lined' | 'grid'>('white');
   const [canvasHistory, setCanvasHistory] = useState<string[]>([]);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Synchronize drafts with localStorage
+  useEffect(() => {
+    localStorage.setItem('municipal_notes_draft_isAdding', JSON.stringify(isAdding));
+  }, [isAdding]);
+
+  useEffect(() => {
+    if (activeNoteId) {
+      localStorage.setItem('municipal_notes_draft_activeNoteId', activeNoteId);
+    } else {
+      localStorage.removeItem('municipal_notes_draft_activeNoteId');
+    }
+  }, [activeNoteId]);
+
+  useEffect(() => {
+    localStorage.setItem('municipal_notes_draft_newNote', JSON.stringify(newNote));
+  }, [newNote]);
 
   const colors = [
     { name: 'أبيض', class: 'bg-white' },
@@ -313,6 +353,11 @@ export default function NotesTab({ notes, onSave, onDelete }: NotesTabProps) {
     setActiveNoteId(null);
     setIsAdding(false);
     setCanvasHistory([]);
+
+    // Clear drafts from localStorage
+    localStorage.removeItem('municipal_notes_draft_isAdding');
+    localStorage.removeItem('municipal_notes_draft_activeNoteId');
+    localStorage.removeItem('municipal_notes_draft_newNote');
   };
 
   const handleCloseWithAutoSave = () => {
@@ -321,6 +366,10 @@ export default function NotesTab({ notes, onSave, onDelete }: NotesTabProps) {
     } else {
       setIsAdding(false);
       setActiveNoteId(null);
+      // Clear empty draft
+      localStorage.removeItem('municipal_notes_draft_isAdding');
+      localStorage.removeItem('municipal_notes_draft_activeNoteId');
+      localStorage.removeItem('municipal_notes_draft_newNote');
     }
   };
 

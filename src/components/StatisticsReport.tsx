@@ -412,6 +412,13 @@ export default function StatisticsReport({
     );
   };
 
+  const getDayOfWeekArabic = (dateStr: string): string => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+    return days[date.getDay()] || '';
+  };
+
   // Daily/Weekly/Monthly Stats Form State
   const initialStatsState = {
     date: new Date().toISOString().split('T')[0],
@@ -447,14 +454,14 @@ export default function StatisticsReport({
     tripsLorry: 0
   };
 
-  const [formData, setFormData] = useState<Omit<DailyStats, 'id'> & { id?: string }>(initialStatsState);
-
-  const getDayOfWeekArabic = (dateStr: string): string => {
-    if (!dateStr) return '';
-    const date = new Date(dateStr);
-    const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-    return days[date.getDay()] || '';
-  };
+  const [formData, setFormData] = useState<Omit<DailyStats, 'id'> & { id?: string }>(() => {
+    try {
+      const saved = localStorage.getItem('municipal_stats_formData_draft');
+      return saved ? { ...initialStatsState, ...JSON.parse(saved) } : initialStatsState;
+    } catch {
+      return initialStatsState;
+    }
+  });
 
   // Field Report Form State
   const initialFieldState = {
@@ -488,7 +495,24 @@ export default function StatisticsReport({
     administration: 'إدارة النظافة العامة وإشغالات الطرق'
   };
 
-  const [fieldForm, setFieldForm] = useState<Omit<FieldInspectionReport, 'id'> & { id?: string }>(initialFieldState);
+  const [fieldForm, setFieldForm] = useState<Omit<FieldInspectionReport, 'id'> & { id?: string }>(() => {
+    try {
+      const saved = localStorage.getItem('municipal_stats_fieldForm_draft');
+      return saved ? { ...initialFieldState, ...JSON.parse(saved) } : initialFieldState;
+    } catch {
+      return initialFieldState;
+    }
+  });
+
+  // Automatically save stats form draft on input change
+  React.useEffect(() => {
+    localStorage.setItem('municipal_stats_formData_draft', JSON.stringify(formData));
+  }, [formData]);
+
+  // Automatically save field report form draft on input change
+  React.useEffect(() => {
+    localStorage.setItem('municipal_stats_fieldForm_draft', JSON.stringify(fieldForm));
+  }, [fieldForm]);
 
   // Auto-scale states for previewing perfectly within the screen container
   const [statsPreviewScale, setStatsPreviewScale] = useState(1);
@@ -593,6 +617,7 @@ export default function StatisticsReport({
   const resetStatsForm = () => {
     setFormData(initialStatsState);
     setActiveInspectorRowTab(1);
+    localStorage.removeItem('municipal_stats_formData_draft');
   };
 
   const exportTableAsImage = async (id: string, type?: 'weekly' | 'monthly') => {
@@ -1194,6 +1219,7 @@ export default function StatisticsReport({
 
   const resetFieldForm = () => {
     setFieldForm(initialFieldState);
+    localStorage.removeItem('municipal_stats_fieldForm_draft');
   };
 
   const exportFieldAsImage = async (id: string, name?: string) => {
