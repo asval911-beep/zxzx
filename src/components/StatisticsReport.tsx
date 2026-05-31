@@ -2643,32 +2643,33 @@ export default function StatisticsReport({
                       </div>
                     </div>
 
-                    <div className="pt-2 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between gap-1 text-xs">
+                    <div className="pt-2 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between gap-1.5 text-xs">
                       {/* Active load function to preview inside single live screen */}
                       <button 
                         onClick={() => {
                           setFormData(s);
                           setActiveStatsPreviewModal(true);
                         }}
-                        className="text-white bg-municipality-blue/90 hover:bg-municipality-blue flex items-center gap-1 px-2.5 py-1.5 rounded-lg font-black transition-all cursor-pointer"
+                        className="text-white bg-municipality-blue/90 hover:bg-municipality-blue flex items-center gap-1.5 px-3 py-2 rounded-xl font-black shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer text-[11px]"
                       >
+                        <Eye size={16} />
                         عرض المعاينة 🔍
                       </button>
 
-                      <div className="flex gap-1.5">
+                      <div className="flex gap-2">
                         <button 
                           onClick={() => handleExportArchivedStats(s)}
                           title="تنزيل كصورة عالية الدقة"
-                          className="text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 p-1.5 rounded-lg transition-all cursor-pointer"
+                          className="text-white bg-amber-600 hover:bg-amber-700 p-2.5 rounded-xl transition-all shadow-sm hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center border border-amber-500/10"
                         >
-                          <Download size={15} />
+                          <Download size={18} />
                         </button>
                         <button 
                           onClick={() => handlePrintArchivedStats(s)}
                           title="طباعة"
-                          className="text-slate-800 bg-slate-50 hover:bg-slate-100 border border-slate-200 p-1.5 rounded-lg transition-all"
+                          className="text-white bg-indigo-650 bg-indigo-600 hover:bg-indigo-700 p-2.5 rounded-xl transition-all shadow-sm hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center border border-indigo-500/10"
                         >
-                          <Printer size={15} />
+                          <Printer size={18} />
                         </button>
                         {deletingStatId === s.id ? (
                           <div className="flex items-center gap-1.5 bg-red-50 dark:bg-red-950/25 px-2 py-1 rounded-lg border border-red-200 dark:border-red-900/40">
@@ -2693,9 +2694,9 @@ export default function StatisticsReport({
                           <button 
                             onClick={() => setDeletingStatId(s.id)}
                             title="حذف"
-                            className="text-red-400 hover:bg-red-50 hover:text-red-600 p-1.5 rounded-lg transition-all"
+                            className="text-red-600 bg-red-55 bg-red-50 hover:bg-red-100 dark:bg-red-950/30 dark:hover:bg-red-900/40 border border-red-200 dark:border-red-900/50 p-2.5 rounded-xl transition-all shadow-sm hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
                           >
-                            <Trash2 size={15} />
+                            <Trash2 size={18} />
                           </button>
                         )}
                       </div>
@@ -3339,15 +3340,16 @@ export default function StatisticsReport({
                     </div>
                   </div>
 
-                  <div className="pt-2 border-t border-gray-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <div className="pt-2 border-t border-gray-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-1.5 text-xs">
                     {/* Active load function to preview inside single live screen */}
                     <button 
                       onClick={() => {
                         setFieldForm(report);
                         window.scrollTo({ top: 350, behavior: 'smooth' });
                       }}
-                      className="text-white bg-municipality-blue/90 hover:bg-municipality-blue flex items-center gap-1.5 px-3.5 py-2 rounded-lg font-black transition-all"
+                      className="text-white bg-municipality-blue/90 hover:bg-municipality-blue flex items-center gap-1.5 px-3 py-2 rounded-xl font-black shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer text-[11px]"
                     >
+                      <Eye size={16} />
                       عرض في المعاينة 🔍
                     </button>
 
@@ -3355,16 +3357,16 @@ export default function StatisticsReport({
                       <button 
                         onClick={() => handleExportArchivedField(report)}
                         title="حفظ كصورة PNG عالية الجودة"
-                        className="text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 p-2 rounded-lg transition-all"
+                        className="text-white bg-amber-600 hover:bg-amber-700 p-2.5 rounded-xl transition-all shadow-sm hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center border border-amber-500/10"
                       >
-                        <Download size={16} />
+                        <Download size={18} />
                       </button>
                       <button 
                         onClick={() => handlePrintArchivedField(report)}
                         title="طباعة ورقة A4"
-                        className="text-slate-800 bg-slate-50 hover:bg-slate-100 border border-slate-200 p-2 rounded-lg transition-all"
+                        className="text-white bg-indigo-650 bg-indigo-600 hover:bg-indigo-700 p-2.5 rounded-xl transition-all shadow-sm hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center border border-indigo-500/10"
                       >
-                        <Printer size={16} />
+                        <Printer size={18} />
                       </button>
                       {onDeleteFieldReport && (
                         deletingFieldReportId === report.id ? (

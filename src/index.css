@@ -75,7 +75,7 @@
 }
 
 .municipal-input {
-  @apply w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-xl focus:ring-4 focus:ring-municipality-blue/5 focus:border-municipality-blue outline-none transition-all text-lg font-bold;
+  @apply w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-xl focus:ring-4 focus:ring-municipality-blue/5 focus:border-municipality-blue outline-none transition-all text-lg font-bold text-slate-900;
 }
 
 .municipal-button-primary {

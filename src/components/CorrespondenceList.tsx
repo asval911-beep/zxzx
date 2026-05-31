@@ -99,6 +99,8 @@ export default function CorrespondenceList({ books, onSave, onDelete }: Correspo
     isPdf: boolean;
     isImage: boolean;
     revoke: () => void;
+    bookTitle?: string;
+    bookType?: 'incoming' | 'outgoing';
   } | null>(null);
 
   // Clean up object URLs on unmount to prevent leaks
@@ -110,7 +112,7 @@ export default function CorrespondenceList({ books, onSave, onDelete }: Correspo
     };
   }, [activePreview]);
 
-  const handleOpenPreview = (fileStr: string) => {
+  const handleOpenPreview = (fileStr: string, bookTitle?: string, bookType?: 'incoming' | 'outgoing') => {
     if (activePreview) {
       activePreview.revoke();
     }
@@ -124,7 +126,9 @@ export default function CorrespondenceList({ books, onSave, onDelete }: Correspo
       mimeType: parsed.mimeType,
       isPdf: parsed.isPdf,
       isImage: parsed.isImage,
-      revoke: safeObj.revoke
+      revoke: safeObj.revoke,
+      bookTitle,
+      bookType
     });
   };
 
@@ -249,6 +253,44 @@ export default function CorrespondenceList({ books, onSave, onDelete }: Correspo
                   accept="*"
                 />
                 <p className="text-[11px] text-gray-400 font-bold">يمكنك اختيار ملفات متعددة بأي صيغة كانت، وسيحتفظ النظام بأسمائها الأصلية.</p>
+
+                {formData.files.length > 0 && (
+                  <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-950/40 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2">
+                    <p className="text-xs font-black text-slate-700 dark:text-gray-300">المستندات المختارة للتنزيل/الحفظ ({formData.files.length}):</p>
+                    <div className="flex flex-wrap gap-2">
+                      {formData.files.map((fileStr, idx) => {
+                        const parsed = parseFileString(fileStr);
+                        return (
+                          <div key={idx} className="flex items-center gap-2 bg-amber-50 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 rounded-xl px-2.5 py-1 text-xs">
+                            {parsed.isPdf ? (
+                              <FileText size={14} className="text-red-500 shrink-0" />
+                            ) : parsed.isImage ? (
+                              <Eye size={14} className="text-emerald-500 shrink-0" />
+                            ) : (
+                              <FileSearch size={14} className="text-indigo-500 dark:text-indigo-400 shrink-0" />
+                            )}
+                            <span className="font-extrabold text-slate-900 dark:text-gray-100 truncate max-w-[150px]" title={parsed.name}>
+                              {parsed.name}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  files: prev.files.filter((_, fIdx) => fIdx !== idx)
+                                }));
+                              }}
+                              className="text-red-500 hover:text-red-700 mr-1 cursor-pointer font-black text-sm"
+                              title="إزالة الملف"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="flex justify-end pt-4">
                  <button type="submit" className="municipal-button-primary">حفظ المعاملة</button>
@@ -275,13 +317,27 @@ export default function CorrespondenceList({ books, onSave, onDelete }: Correspo
               className="relative max-w-4xl w-full bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-gray-150 dark:border-slate-800"
               dir="rtl"
             >
-              <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50 dark:bg-slate-950">
-                <span className="font-extrabold text-xs sm:text-sm text-municipality-blue dark:text-gray-200 flex items-center gap-2">
-                  <FileSearch size={18} className="text-municipality-gold shrink-0" /> 
-                  <span className="truncate max-w-[180px] sm:max-w-[400px]" title={activePreview.name}>معاينة: {activePreview.name}</span>
-                </span>
+              <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-gray-50 dark:bg-slate-950">
+                <div className="flex flex-wrap items-center gap-2 min-w-0">
+                  <FileSearch size={18} className="text-municipality-gold shrink-0 animate-pulse" /> 
+                  
+                  {activePreview.bookTitle && (
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="font-extrabold text-xs text-slate-500 dark:text-slate-400">الكتاب/المعاملة:</span>
+                      <span className="text-blue-900 bg-blue-100 border border-blue-300 dark:text-blue-200 dark:bg-blue-950/40 dark:border-blue-900 px-2.5 py-1 rounded-lg text-xs font-black inline-block truncate max-w-[200px] sm:max-w-[320px]" title={activePreview.bookTitle}>
+                        {activePreview.bookTitle}
+                      </span>
+                      <span className="text-gray-300 dark:text-slate-700 font-bold">|</span>
+                    </div>
+                  )}
+
+                  <span className="font-extrabold text-xs text-slate-500 dark:text-slate-400 font-bold">الملف المعاين:</span>
+                  <span className="text-slate-900 bg-amber-100 border border-amber-300 dark:text-amber-250 dark:bg-amber-950/40 dark:border-amber-900/50 px-2.5 py-1 rounded-lg text-xs font-black inline-block truncate max-w-[180px] sm:max-w-[320px]" title={activePreview.name}>
+                    {activePreview.name}
+                  </span>
+                </div>
                 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0 self-end md:self-auto">
                   {/* Escape hatch button: Open in new window */}
                   {(activePreview.isPdf || activePreview.isImage) && (
                     <button
@@ -305,7 +361,7 @@ export default function CorrespondenceList({ books, onSave, onDelete }: Correspo
                     تحميل الملف
                   </a>
                   
-                  <button onClick={handleClosePreview} className="p-1 hover:bg-gray-200 dark:hover:bg-slate-800 rounded-full transition-colors font-bold text-slate-500 dark:text-gray-400 cursor-pointer">
+                  <button onClick={handleClosePreview} className="p-1 hover:bg-gray-200 dark:hover:bg-slate-800 rounded-full transition-colors font-bold text-slate-400 dark:text-gray-500 cursor-pointer">
                     <X size={20} />
                   </button>
                 </div>
@@ -336,9 +392,9 @@ export default function CorrespondenceList({ books, onSave, onDelete }: Correspo
                     <div className="w-16 h-16 rounded-2xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center text-municipality-gold animate-bounce">
                       <FileText size={36} className="stroke-[2.5]" />
                     </div>
-                    <div>
-                      <h4 className="font-extrabold text-base text-slate-800 dark:text-gray-100 mb-1 leading-snug truncate max-w-full">{activePreview.name}</h4>
-                      <p className="text-xs text-slate-500 dark:text-gray-400 font-bold">صيغة الملف: <span className="font-mono text-[11px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-indigo-500 dark:text-indigo-400 font-extrabold">{activePreview.mimeType}</span></p>
+                    <div className="w-full">
+                      <h4 className="font-extrabold text-base text-slate-900 dark:text-white mb-2 leading-snug truncate max-w-full bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">{activePreview.name}</h4>
+                      <p className="text-xs text-slate-500 dark:text-gray-400 font-bold">صيغة الملف: <span className="font-mono text-[11px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-indigo-600 dark:text-cyan-400 font-extrabold">{activePreview.mimeType}</span></p>
                     </div>
                     <div className="w-full h-[1px] bg-gray-100 dark:bg-slate-800"></div>
                     <p className="text-xs text-slate-600 dark:text-gray-300 font-extrabold leading-relaxed text-center">
@@ -364,20 +420,22 @@ export default function CorrespondenceList({ books, onSave, onDelete }: Correspo
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {books.map(book => (
-          <div key={book.id} className="municipal-card flex overflow-hidden">
+          <div key={book.id} className="municipal-card flex overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
             <div className={cn(
               "w-2.5 shrink-0",
-              book.type === 'incoming' ? "bg-green-500" : "bg-municipality-blue"
+              book.type === 'incoming' ? "bg-green-500" : "bg-[#0e2c4d]"
             )} />
-            <div className="p-6 flex-1">
-              <div className="flex justify-between items-start mb-3">
+            <div className="p-6 flex-1 bg-white dark:bg-[#0e2c4d]">
+              <div className="flex justify-between items-start mb-3 bg-white dark:bg-[#0e2c4d]">
                 <div>
-                  <h3 className="font-bold text-lg text-slate-850 dark:text-gray-100">{book.title}</h3>
-                  <div className="flex items-center gap-4 text-xs text-gray-400 mt-1">
+                  <h3 className="font-extrabold text-lg text-slate-950 dark:text-slate-100 leading-tight block">{book.title}</h3>
+                  <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400 mt-1">
                     <span className="flex items-center gap-1 font-bold"><Calendar size={12} /> {book.date}</span>
                     <span className={cn(
                       "px-2.5 py-0.5 rounded-full font-black text-[10px]",
-                      book.type === 'incoming' ? "bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-300" : "bg-blue-50/80 text-municipality-blue border border-municipality-blue/10 dark:bg-municipality-blue/30 dark:text-gray-100 dark:border-municipality-blue/40"
+                      book.type === 'incoming' 
+                        ? "bg-green-100 text-green-800 dark:bg-green-950/50 dark:text-green-300" 
+                        : "bg-blue-100 text-blue-800 dark:bg-blue-950/50 dark:text-blue-300"
                     )}>
                       {book.type === 'incoming' ? 'وارد' : 'صادر'}
                     </span>
@@ -412,7 +470,7 @@ export default function CorrespondenceList({ books, onSave, onDelete }: Correspo
                 )}
               </div>
 
-              <p className="text-sm text-gray-600 dark:text-gray-350 mb-4 font-semibold break-words whitespace-pre-line">{book.description}</p>
+              <p className="text-sm text-slate-700 dark:text-gray-300 mb-4 font-semibold break-words whitespace-pre-line">{book.description}</p>
 
               {book.files && book.files.length > 0 && (
                 <div className="flex flex-col gap-2 mt-2">
@@ -421,30 +479,30 @@ export default function CorrespondenceList({ books, onSave, onDelete }: Correspo
                     {book.files.map((f, i) => {
                       const parsed = parseFileString(f);
                       return (
-                        <div key={i} className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 rounded-xl p-2 transition-all text-right w-full sm:w-auto max-w-full shadow-xs">
-                          <div className="flex items-center gap-1.5 overflow-hidden shrink min-w-0">
-                            <span className="text-municipality-blue dark:text-cyan-400 shrink-0">
+                        <div key={i} className="flex items-center gap-2 bg-slate-100/80 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 transition-all text-right w-full sm:w-auto max-w-full">
+                          <div className="flex items-center gap-2 overflow-hidden shrink min-w-0">
+                            <span className="shrink-0">
                               {parsed.isPdf ? (
-                                <FileText size={15} className="text-red-500" />
+                                <FileText size={16} className="text-red-500" />
                               ) : parsed.isImage ? (
-                                <Eye size={15} className="text-emerald-500" />
+                                <Eye size={16} className="text-emerald-500" />
                               ) : (
-                                <FileSearch size={15} className="text-indigo-500 dark:text-indigo-400" />
+                                <FileSearch size={16} className="text-indigo-600 dark:text-cyan-400" />
                               )}
                             </span>
-                            <span className="text-xs font-extrabold text-slate-700 dark:text-gray-300 truncate max-w-[150px] select-none" title={parsed.name}>
+                            <span className="text-xs font-black text-slate-900 dark:text-white truncate max-w-[180px] select-none block" title={parsed.name}>
                               {parsed.name}
                             </span>
                           </div>
                           
-                          <div className="flex items-center gap-1.5 shrink-0 mr-auto">
+                          <div className="flex items-center gap-2 shrink-0 mr-auto">
                             {/* Eye button to open fully integrated responsive preview overlay */}
                             <button 
-                              onClick={() => handleOpenPreview(f)}
-                              className="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-gray-400 rounded-lg transition-colors cursor-pointer"
+                              onClick={() => handleOpenPreview(f, book.title, book.type)}
+                              className="p-1.5 bg-blue-50 dark:bg-blue-950 hover:bg-blue-100 dark:hover:bg-blue-900 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900 rounded-lg transition-colors cursor-pointer"
                               title="عرض ومعاينة الملف"
                             >
-                              <Eye size={13} />
+                              <Eye size={15} />
                             </button>
                             {/* Direct download with actual captured file name */}
                             <button 
@@ -458,10 +516,10 @@ export default function CorrespondenceList({ books, onSave, onDelete }: Correspo
                                   safeObj.revoke();
                                 }, 1500);
                               }}
-                              className="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 text-municipality-gold rounded-lg transition-colors cursor-pointer"
+                              className="p-1.5 bg-emerald-50 dark:bg-emerald-950 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900 rounded-lg transition-colors cursor-pointer"
                               title="تحميل الملف"
                             >
-                              <Download size={13} />
+                              <Download size={15} />
                             </button>
                           </div>
                         </div>
