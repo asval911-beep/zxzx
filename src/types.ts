@@ -246,6 +246,7 @@ export interface DailyStats {
   row10_droppedCarsForSale?: number;
 
   inspectorCount?: number;
+  signatures?: { role: string; name?: string; date?: string }[];
 }
 
 export interface FieldInspectionReport {

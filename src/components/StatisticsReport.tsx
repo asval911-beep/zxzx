@@ -419,6 +419,19 @@ export default function StatisticsReport({
     return days[date.getDay()] || '';
   };
 
+  const isFieldEmpty = (val: string | undefined | null): boolean => {
+    if (!val) return true;
+    const trimmed = val.trim().toLowerCase();
+    return (
+      trimmed === '' || 
+      trimmed === 'فارغ' || 
+      trimmed === '---' || 
+      trimmed === '---------' || 
+      trimmed === '_________' ||
+      trimmed === '------'
+    );
+  };
+
   // Daily/Weekly/Monthly Stats Form State
   const initialStatsState = {
     date: new Date().toISOString().split('T')[0],
@@ -599,6 +612,46 @@ export default function StatisticsReport({
       centerName: prev.id ? prev.centerName : (prev.centerName || defaultCenter)
     }));
   }, [settings]);
+
+  // Dynamic Signatures helpers
+  const currentSigs = formData.signatures && formData.signatures.length > 0 
+    ? formData.signatures 
+    : (formData.reportType === 'weekly' 
+        ? [
+            { role: 'مشرف النوبة', name: '', date: '' },
+            { role: 'رئيس المركز', name: '', date: '' },
+            { role: 'رئيس قسم مراكز النظافة', name: '', date: '' }
+          ]
+        : [
+            { role: 'اعتماد رئيس المركز', name: '', date: '' },
+            { role: 'اعتماد رئيس قسم مراكز النظافة', name: '', date: '' }
+          ]
+      );
+
+  const updateSignature = (index: number, key: 'role' | 'name' | 'date', value: string) => {
+    const updated = [...currentSigs];
+    updated[index] = { ...updated[index], [key]: value };
+    setFormData({ ...formData, signatures: updated });
+  };
+
+  const changeSignatureCount = (count: number) => {
+    let updated = [...currentSigs];
+    if (updated.length < count) {
+      const diff = count - updated.length;
+      for (let i = 0; i < diff; i++) {
+        const nextIdx = updated.length;
+        let defaultRole = `موقع ${nextIdx + 1}`;
+        if (nextIdx === 0) defaultRole = 'المفتش المختص';
+        else if (nextIdx === 1) defaultRole = 'رئيس المركز';
+        else if (nextIdx === 2) defaultRole = 'مراقب عام النظافة';
+        else if (nextIdx === 3) defaultRole = 'مدير إدارة النظافة';
+        updated.push({ role: defaultRole, name: '', date: '' });
+      }
+    } else if (updated.length > count) {
+      updated = updated.slice(0, count);
+    }
+    setFormData({ ...formData, signatures: updated });
+  };
 
   // Statistics Submit Handler
   const handleStatsSubmit = (e: React.FormEvent) => {
@@ -1777,13 +1830,18 @@ export default function StatisticsReport({
                     
                     <div className="space-y-1">
                       <label className="text-xs font-black text-slate-500 dark:text-gray-400 block">نوبة العمل:</label>
-                      <input 
-                        type="text"
-                        className="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-850 border border-gray-200 dark:border-slate-800 rounded-lg text-xs font-black text-slate-800 dark:text-white focus:border-municipality-gold focus:ring-1 focus:ring-municipality-gold outline-none transition-all"
-                        placeholder="مثال: أ / ب / ج / صباحي..."
+                      <select 
+                        className="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-850 border border-gray-200 dark:border-slate-800 rounded-lg text-xs font-black text-slate-800 dark:text-white focus:border-municipality-gold focus:ring-1 focus:ring-municipality-gold outline-none transition-all cursor-pointer"
                         value={formData.shift || ''}
                         onChange={e => setFormData({ ...formData, shift: e.target.value })}
-                      />
+                      >
+                        <option value="">فارغ / لا نوبة</option>
+                        <option value="أ">أ</option>
+                        <option value="ب">ب</option>
+                        <option value="ج">ج</option>
+                        <option value="صباحية">صباحية</option>
+                        <option value="مسائية">مسائية</option>
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -1830,13 +1888,20 @@ export default function StatisticsReport({
                       
                       <div className="space-y-1">
                         <label className="text-xs font-black text-slate-500 dark:text-gray-400 block">المسمى الوظيفي للمسؤول (اختياري):</label>
-                        <input 
-                          type="text"
-                          className="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-850 border border-gray-200 dark:border-slate-800 rounded-lg text-xs font-black text-slate-800 dark:text-white focus:border-municipality-gold focus:ring-1 focus:ring-municipality-gold outline-none transition-all"
+                        <select 
+                          className="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-850 border border-gray-200 dark:border-slate-800 rounded-lg text-xs font-black text-slate-800 dark:text-white focus:border-municipality-gold focus:ring-1 focus:ring-municipality-gold outline-none transition-all cursor-pointer"
                           value={formData.jobTitle || ''}
-                          placeholder="مثال: رئيس مركز نظافة..."
                           onChange={e => setFormData({ ...formData, jobTitle: e.target.value })}
-                        />
+                        >
+                          <option value="">فارغ / لم يتم التحديد</option>
+                          <option value="مفتش">مفتش</option>
+                          <option value="مساعد مفتش">مساعد مفتش</option>
+                          <option value="مشرف">مشرف</option>
+                          <option value="مساعد مشرف">مساعد مشرف</option>
+                          <option value="رئيس المراكز">رئيس المراكز</option>
+                          <option value="المراقب">المراقب</option>
+                          <option value="مساعد مراقب">مساعد مراقب</option>
+                        </select>
                       </div>
                       <div className="space-y-1">
                         <label className="text-xs font-black text-slate-550 dark:text-gray-400 block">رقم الضبطية القضائية / الملف (اختياري):</label>
@@ -1847,6 +1912,104 @@ export default function StatisticsReport({
                           placeholder="رقم المفتش أو ملف المركز..."
                           onChange={e => setFormData({ ...formData, fileNumber: e.target.value })}
                         />
+                      </div>
+                    </div>
+
+                    {/* ✍️ Signature Customizer Panel */}
+                    <div className="bg-white dark:bg-slate-900/50 p-4 border border-gray-150 dark:border-slate-800 rounded-xl space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-2 gap-2">
+                        <span className="text-xs font-black text-municipality-blue dark:text-gray-300 block">
+                          ✍️ إعداد وخيارات تواقيع التقرير (خانات تواقيع تفاعلية متعددة للطباعة والحفظ):
+                        </span>
+                        <div className="flex gap-1.5 items-center">
+                          <span className="text-[11px] font-bold text-slate-500">عدد التواقيع بالتقرير:</span>
+                          <div className="flex bg-gray-100 dark:bg-slate-800 p-0.5 rounded-lg border border-gray-200 dark:border-slate-700">
+                            {[1, 2, 3, 4].map(num => {
+                              const isActive = currentSigs.length === num;
+                              return (
+                                <button
+                                  key={num}
+                                  type="button"
+                                  onClick={() => changeSignatureCount(num)}
+                                  className={`px-2.5 py-1 text-xs font-black rounded-md transition-all ${
+                                    isActive 
+                                      ? 'bg-municipality-gold text-slate-950 shadow-sm' 
+                                      : 'text-slate-600 dark:text-gray-400 hover:text-slate-900'
+                                  }`}
+                                >
+                                  {num}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {currentSigs.map((sig, sIdx) => (
+                          <div key={sIdx} className="bg-slate-50 dark:bg-slate-850/50 border border-slate-200 dark:border-slate-800 p-3 rounded-lg space-y-2.5 relative">
+                            <span className="absolute left-2.5 top-2 text-[10px] bg-slate-200 dark:bg-slate-800 text-slate-500 rounded px-1.5 font-bold">التوقيع {sIdx + 1}</span>
+                            
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-black text-slate-500 block">المسمى (مثال: رئيس المركز):</label>
+                              <input 
+                                type="text"
+                                className="w-full px-2 py-1.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded text-xs font-black text-slate-800 dark:text-white focus:ring-1 focus:ring-municipality-gold outline-none"
+                                value={sig.role || ''}
+                                placeholder="الموقع بالتقرير..."
+                                onChange={e => updateSignature(sIdx, 'role', e.target.value)}
+                              />
+                              <div className="flex flex-wrap gap-1 mt-1">
+                                {['مشرف النوبة', 'رئيس المركز', 'رئيس القسم', 'مراقب عام', 'مدير الإدارة', 'المفتش'].map(roleWord => (
+                                  <button
+                                    key={roleWord}
+                                    type="button"
+                                    onClick={() => updateSignature(sIdx, 'role', roleWord)}
+                                    className="text-[8.5px] bg-white dark:bg-slate-850 border border-gray-250 dark:border-slate-750 text-slate-600 dark:text-gray-400 font-bold px-1.5 py-0.5 rounded hover:bg-slate-100"
+                                  >
+                                    {roleWord}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-black text-slate-500 block">الاسم (اختياري لليدوي):</label>
+                              <input 
+                                type="text"
+                                className="w-full px-2 py-1.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded text-xs font-black text-slate-800 dark:text-white focus:ring-1 focus:ring-municipality-gold outline-none"
+                                value={sig.name || ''}
+                                placeholder="الاسم الكامل للموقع..."
+                                onChange={e => updateSignature(sIdx, 'name', e.target.value)}
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-black text-slate-500 block">التاريخ / النص (اختياري):</label>
+                              <div className="flex gap-1">
+                                <input 
+                                  type="text"
+                                  className="w-full flex-1 px-2 py-1.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded text-xs font-black text-slate-800 dark:text-white focus:ring-1 focus:ring-municipality-gold outline-none font-mono"
+                                  value={sig.date || ''}
+                                  placeholder="      /      /   2026"
+                                  onChange={e => updateSignature(sIdx, 'date', e.target.value)}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const today = new Date();
+                                    const formatted = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
+                                    updateSignature(sIdx, 'date', formatted);
+                                  }}
+                                  className="px-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-850 dark:hover:bg-slate-750 text-slate-700 dark:text-gray-300 rounded text-[9.5px]"
+                                  title="تاريخ اليوم"
+                                >
+                                  اليوم
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
 
@@ -1943,44 +2106,46 @@ export default function StatisticsReport({
                 </div>
 
                  {/* Machinery & Trips */}
-                 <div className="p-4 rounded-xl space-y-3 animate-fade-in animate-duration-205 stat-card-emerald shadow-sm">
-                   <p className="text-xs font-black border-r-4 border-emerald-500 pr-2 stat-title">الآليات ودروب النقل</p>
+                 {formData.reportType === 'monthly' && (
+                   <div className="p-4 rounded-xl space-y-3 animate-fade-in animate-duration-205 stat-card-emerald shadow-sm">
+                     <p className="text-xs font-black border-r-4 border-emerald-500 pr-2 stat-title">الآليات ودروب النقل</p>
 
-                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                     <div className="space-y-1 bg-white p-2 rounded-lg border border-emerald-100">
-                       <label className="text-[9px] font-bold text-emerald-800 block">النفايات</label>
-                       <input 
-                         type="number" min="0" className="w-full text-center text-xs font-black border-none outline-none p-0 mt-1 focus:ring-0"
-                         value={formData.tripsWaste || 0}
-                         onChange={e => setFormData({ ...formData, tripsWaste: parseInt(e.target.value) || 0 })}
-                       />
-                     </div>
-                     <div className="space-y-1 bg-white p-2 rounded-lg border border-emerald-100">
-                       <label className="text-[9px] font-bold text-emerald-800 block">نساف كبير</label>
-                       <input 
-                         type="number" min="0" className="w-full text-center text-xs font-black border-none outline-none p-0 mt-1 focus:ring-0"
-                         value={formData.tripsBigDumper || 0}
-                         onChange={e => setFormData({ ...formData, tripsBigDumper: parseInt(e.target.value) || 0 })}
-                       />
-                     </div>
-                     <div className="space-y-1 bg-white p-2 rounded-lg border border-emerald-100">
-                       <label className="text-[9px] font-bold text-emerald-800 block">نساف صغير</label>
-                       <input 
-                         type="number" min="0" className="w-full text-center text-xs font-black border-none outline-none p-0 mt-1 focus:ring-0"
-                         value={formData.tripsSmallDumper || 0}
-                         onChange={e => setFormData({ ...formData, tripsSmallDumper: parseInt(e.target.value) || 0 })}
-                       />
-                     </div>
-                     <div className="space-y-1 bg-white p-2 rounded-lg border border-emerald-100">
-                       <label className="text-[9px] font-bold text-emerald-800 block">لوري</label>
-                       <input 
-                         type="number" min="0" className="w-full text-center text-xs font-black border-none outline-none p-0 mt-1 focus:ring-0"
-                         value={formData.tripsLorry || 0}
-                         onChange={e => setFormData({ ...formData, tripsLorry: parseInt(e.target.value) || 0 })}
-                       />
+                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                       <div className="space-y-1 bg-white p-2 rounded-lg border border-emerald-100">
+                         <label className="text-[9px] font-bold text-emerald-800 block">النفايات</label>
+                         <input 
+                           type="number" min="0" className="w-full text-center text-xs font-black border-none outline-none p-0 mt-1 focus:ring-0"
+                           value={formData.tripsWaste || 0}
+                           onChange={e => setFormData({ ...formData, tripsWaste: parseInt(e.target.value) || 0 })}
+                         />
+                       </div>
+                       <div className="space-y-1 bg-white p-2 rounded-lg border border-emerald-100">
+                         <label className="text-[9px] font-bold text-emerald-800 block">نساف كبير</label>
+                         <input 
+                           type="number" min="0" className="w-full text-center text-xs font-black border-none outline-none p-0 mt-1 focus:ring-0"
+                           value={formData.tripsBigDumper || 0}
+                           onChange={e => setFormData({ ...formData, tripsBigDumper: parseInt(e.target.value) || 0 })}
+                         />
+                       </div>
+                       <div className="space-y-1 bg-white p-2 rounded-lg border border-emerald-100">
+                         <label className="text-[9px] font-bold text-emerald-800 block">نساف صغير</label>
+                         <input 
+                           type="number" min="0" className="w-full text-center text-xs font-black border-none outline-none p-0 mt-1 focus:ring-0"
+                           value={formData.tripsSmallDumper || 0}
+                           onChange={e => setFormData({ ...formData, tripsSmallDumper: parseInt(e.target.value) || 0 })}
+                         />
+                       </div>
+                       <div className="space-y-1 bg-white p-2 rounded-lg border border-emerald-100">
+                         <label className="text-[9px] font-bold text-emerald-800 block">لوري</label>
+                         <input 
+                           type="number" min="0" className="w-full text-center text-xs font-black border-none outline-none p-0 mt-1 focus:ring-0"
+                           value={formData.tripsLorry || 0}
+                           onChange={e => setFormData({ ...formData, tripsLorry: parseInt(e.target.value) || 0 })}
+                         />
+                       </div>
                      </div>
                    </div>
-                 </div>
+                 )}
 
                                  <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
                    <button 
@@ -2064,10 +2229,11 @@ export default function StatisticsReport({
                       const aggWarnings = (formData.warnings || 0) + (formData.undertakings || 0) + (formData.stickers || 0);
                       const aggTrips = (formData.tripsWaste || 0) + (formData.tripsBigDumper || 0) + (formData.tripsSmallDumper || 0) + (formData.tripsLorry || 0);
 
-                      // Calculated grand total
-                      const grandTotal = aggHygiene + aggViolations + aggComplaints + aggRoad + aggCars + aggWarnings + aggTrips;
+                      // Calculated grand total (trips omitted for weekly)
+                      const isWeekly = formData.reportType === 'weekly';
+                      const grandTotal = aggHygiene + aggViolations + aggComplaints + aggRoad + aggCars + aggWarnings + (isWeekly ? 0 : aggTrips);
 
-                      const maxVal = Math.max(1, aggHygiene, aggViolations, aggComplaints, aggRoad, aggCars, aggWarnings, aggTrips);
+                      const maxVal = Math.max(1, aggHygiene, aggViolations, aggComplaints, aggRoad, aggCars, aggWarnings, ...(isWeekly ? [] : [aggTrips]));
 
                       const categories = [
                         { name: 'لائحة النظافة العامة م354', val: aggHygiene, color: '#154fc1', icon: '✨' },
@@ -2076,38 +2242,57 @@ export default function StatisticsReport({
                         { name: 'مخالفات إشغالات الطرق', val: aggRoad, color: '#3b82f6', icon: '⚠️' },
                         { name: 'رفع المركبات والمهملات', val: aggCars, color: '#0284c7', icon: '🚜' },
                         { name: 'الإنذارات والتعهدات والملصقات', val: aggWarnings, color: '#06b6d4', icon: '📌' },
-                        { name: 'حركة آليات دروب النقل (الدروب)', val: aggTrips, color: '#14b8a6', icon: '🚛' },
+                        ...(!isWeekly ? [
+                          { name: 'حركة آليات دروب النقل (الدروب)', val: aggTrips, color: '#14b8a6', icon: '🚛' }
+                        ] : [])
                       ];
 
                       return (
                         <div className="my-3 space-y-4 w-full">
                           {/* 1. Header Metadata Cards Grid */}
-                          <div className="grid grid-cols-4 gap-2.5">
-                            <div className="border border-slate-900 bg-slate-50 p-2 text-center rounded-lg shadow-sm">
-                              <p className="text-[8px] font-bold text-slate-500 mb-0.5">مركز النظافة ونوبة العمل</p>
-                              <p className="text-[11px] font-black text-slate-950">
-                                مركز {formData.centerName || '_________'} (نوبة {formData.shift || '___'})
-                              </p>
-                            </div>
-                            <div className="border border-slate-900 bg-slate-50 p-2 text-center rounded-lg shadow-sm">
-                              <p className="text-[8px] font-bold text-slate-500 mb-0.5">المسؤول / المفتش المسؤول</p>
-                              <p className="text-[11px] font-black text-slate-950">
-                                {formData.inspectorName || '__________________'} ({formData.jobTitle || 'مفتش'})
-                              </p>
-                            </div>
-                            <div className="border border-slate-900 bg-slate-50 p-2 text-center rounded-lg shadow-sm">
-                              <p className="text-[8px] font-bold text-slate-500 mb-0.5">رقم الضبطية / الملف</p>
-                              <p className="text-[11px] font-bold font-mono text-slate-950">
-                                {formData.fileNumber || '---------'}
-                              </p>
-                            </div>
-                            <div className="border border-slate-900 bg-slate-50 p-2 text-center rounded-lg shadow-sm">
-                              <p className="text-[8px] font-bold text-slate-500 mb-0.5">الفترة الزمنية للإحصائية</p>
-                              <p className="text-[10px] font-black text-teal-850 font-mono">
-                                {formData.date} ➔ {formData.dateTo || '------'}
-                              </p>
-                            </div>
-                          </div>
+                          {(() => {
+                            const headerCards = [];
+                            
+                            if (!isFieldEmpty(formData.centerName) || !isFieldEmpty(formData.shift)) {
+                              headerCards.push({
+                                title: "مركز النظافة ونوبة العمل",
+                                value: `مركز ${formData.centerName || ''} ${!isFieldEmpty(formData.shift) ? `(نوبة ${formData.shift})` : ''}`.trim()
+                              });
+                            }
+                            
+                            if (!isFieldEmpty(formData.inspectorName) || !isFieldEmpty(formData.jobTitle)) {
+                              headerCards.push({
+                                title: "المسؤول / المفتش المسؤول",
+                                value: `${formData.inspectorName || ''} ${!isFieldEmpty(formData.jobTitle) ? `(${formData.jobTitle})` : ''}`.trim()
+                              });
+                            }
+                            
+                            if (!isFieldEmpty(formData.fileNumber)) {
+                              headerCards.push({
+                                title: "رقم الضبطية / الملف",
+                                value: formData.fileNumber
+                              });
+                            }
+                            
+                            headerCards.push({
+                              title: "الفترة الزمنية للإحصائية",
+                              value: `${formData.date} ➔ ${formData.dateTo || '------'}`,
+                              isMono: true
+                            });
+
+                            return (
+                              <div className={`grid grid-cols-1 sm:grid-cols-${headerCards.length} gap-2.5`}>
+                                {headerCards.map((card, idx) => (
+                                  <div key={idx} className="border border-slate-900 bg-slate-50 p-2 text-center rounded-lg shadow-sm">
+                                    <p className="text-[8px] font-bold text-slate-500 mb-0.5">{card.title}</p>
+                                    <p className={`text-[11px] font-black text-slate-950 text-center ${card.isMono ? 'font-mono' : ''}`}>
+                                      {card.value}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            );
+                          })()}
 
                           {/* 2. Main Graphical & Numeric Dashboard Panel */}
                           <div className="grid grid-cols-12 gap-3.5 items-stretch">
@@ -2268,29 +2453,31 @@ export default function StatisticsReport({
                                   </div>
 
                                   {/* Section: حركة آليات النقل */}
-                                  <div className="space-y-1">
-                                    <p className="text-[9.5px] font-black text-green-850 border-r-2 border-green-500 pr-1.5 py-0.2 select-none bg-green-50/30">
-                                      🚛 حركة آليات النقل اليومية (الدروب)
-                                    </p>
-                                    <div className="grid grid-cols-4 gap-1 text-[8.5px] text-center font-bold">
-                                      <div className="bg-white border border-slate-200 p-0.5 rounded">
-                                        <p className="text-slate-500 text-[8px] font-bold">النفايات</p>
-                                        <p className="font-mono font-black text-slate-950">{formData.tripsWaste || 0}</p>
-                                      </div>
-                                      <div className="bg-white border border-slate-200 p-0.5 rounded">
-                                        <p className="text-slate-500 text-[8px] font-bold">كبير</p>
-                                        <p className="font-mono font-black text-slate-950">{formData.tripsBigDumper || 0}</p>
-                                      </div>
-                                      <div className="bg-white border border-slate-200 p-0.5 rounded">
-                                        <p className="text-slate-500 text-[8px] font-bold">صغير</p>
-                                        <p className="font-mono font-black text-slate-950">{formData.tripsSmallDumper || 0}</p>
-                                      </div>
-                                      <div className="bg-white border border-slate-200 p-0.5 rounded">
-                                        <p className="text-slate-500 text-[8px] font-bold">لوري</p>
-                                        <p className="font-mono font-black text-slate-950">{formData.tripsLorry || 0}</p>
+                                  {formData.reportType === 'monthly' && (
+                                    <div className="space-y-1">
+                                      <p className="text-[9.5px] font-black text-green-850 border-r-2 border-green-500 pr-1.5 py-0.2 select-none bg-green-50/30">
+                                        🚛 حركة آليات النقل اليومية (الدروب)
+                                      </p>
+                                      <div className="grid grid-cols-4 gap-1 text-[8.5px] text-center font-bold">
+                                        <div className="bg-white border border-slate-200 p-0.5 rounded">
+                                          <p className="text-slate-500 text-[8px] font-bold">النفايات</p>
+                                          <p className="font-mono font-black text-slate-950">{formData.tripsWaste || 0}</p>
+                                        </div>
+                                        <div className="bg-white border border-slate-200 p-0.5 rounded">
+                                          <p className="text-slate-500 text-[8px] font-bold">كبير</p>
+                                          <p className="font-mono font-black text-slate-950">{formData.tripsBigDumper || 0}</p>
+                                        </div>
+                                        <div className="bg-white border border-slate-200 p-0.5 rounded">
+                                          <p className="text-slate-500 text-[8px] font-bold">صغير</p>
+                                          <p className="font-mono font-black text-slate-950">{formData.tripsSmallDumper || 0}</p>
+                                        </div>
+                                        <div className="bg-white border border-slate-200 p-0.5 rounded">
+                                          <p className="text-slate-500 text-[8px] font-bold">لوري</p>
+                                          <p className="font-mono font-black text-slate-950">{formData.tripsLorry || 0}</p>
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -2305,106 +2492,40 @@ export default function StatisticsReport({
                     </div>
 
                     <div className="pt-2 border-t border-slate-600">
-                      {formData.reportType === 'weekly' ? (
-                        <div className="grid grid-cols-3 gap-3 items-stretch text-[10px] font-bold text-slate-950">
-                          {/* Right: مشرف النوبة */}
-                          <div className="border border-slate-900 p-2 space-y-2 bg-slate-50 text-right rounded-lg shadow-sm">
-                            <p className="font-black border-b border-slate-900 text-center bg-slate-200/80 text-slate-950 py-0.5 mb-1.5 rounded text-[10.5px]">مشرف النوبة</p>
-                            <div className="space-y-1 text-[10px]">
-                              <p className="flex justify-between items-center text-slate-800">
-                                <span>الاسم:</span>
-                                <span className="text-slate-400 font-mono text-[9px]">...........................................</span>
+                      <div className="flex flex-row flex-wrap justify-center items-stretch gap-3 text-[10px] font-black text-slate-950">
+                        {currentSigs.map((sig, sIdx) => {
+                          const pct = Math.floor(100 / currentSigs.length) - 2;
+                          return (
+                            <div 
+                              key={sIdx} 
+                              className="border border-slate-900 p-2 space-y-1.5 bg-slate-50 text-right rounded-lg shadow-sm flex-1" 
+                              style={{ minWidth: `${pct}%`, maxWidth: `${pct}%` }}
+                            >
+                              <p className="font-bold border-b border-slate-900 text-center bg-slate-200/85 text-slate-950 py-0.5 mb-1.5 rounded text-[10.5px]">
+                                {sig.role || 'اعتماد'}
                               </p>
-                              <p className="flex justify-between items-center text-slate-800">
-                                <span>التوقيع:</span>
-                                <span className="text-slate-400 font-mono text-[9px]">...........................................</span>
-                              </p>
-                              <p className="flex justify-between items-center text-slate-800">
-                                <span>التاريخ:</span>
-                                <span className="text-slate-500 font-mono font-bold text-[9px]">      /      /   2026</span>
-                              </p>
+                              <div className="space-y-1 text-[10px]">
+                                <p className="flex justify-between items-center text-slate-800">
+                                  <span>الاسم:</span>
+                                  <span className="text-slate-900 font-extrabold select-all">
+                                    {sig.name ? sig.name : '...........................................'}
+                                  </span>
+                                </p>
+                                <p className="flex justify-between items-center text-slate-800">
+                                  <span>التوقيع:</span>
+                                  <span className="text-slate-400 font-mono text-[9px]">...........................................</span>
+                                </p>
+                                <p className="flex justify-between items-center text-slate-800">
+                                  <span>التاريخ:</span>
+                                  <span className="text-slate-900 font-mono font-bold text-[9px]">
+                                    {sig.date ? sig.date : '      /      /   2026'}
+                                  </span>
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                          
-                          {/* Center: رئيس المركز */}
-                          <div className="border border-slate-900 p-2 space-y-2 bg-slate-50 text-right rounded-lg shadow-sm">
-                            <p className="font-black border-b border-slate-900 text-center bg-slate-200/80 text-slate-950 py-0.5 mb-1.5 rounded text-[10.5px]">رئيس المركز</p>
-                            <div className="space-y-1 text-[10px]">
-                              <p className="flex justify-between items-center text-slate-800">
-                                <span>الاسم:</span>
-                                <span className="text-slate-400 font-mono text-[9px]">...........................................</span>
-                              </p>
-                              <p className="flex justify-between items-center text-slate-800">
-                                <span>التوقيع:</span>
-                                <span className="text-slate-400 font-mono text-[9px]">...........................................</span>
-                              </p>
-                              <p className="flex justify-between items-center text-slate-800">
-                                <span>التاريخ:</span>
-                                <span className="text-slate-500 font-mono font-bold text-[9px]">      /      /   2026</span>
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Left: اعتماد رئيس قسم مراكز النظافة */}
-                          <div className="border border-slate-900 p-2 space-y-2 bg-slate-50 text-right rounded-lg shadow-sm">
-                            <p className="font-black border-b border-slate-900 text-center bg-slate-200/80 text-slate-950 py-0.5 mb-1.5 rounded text-[10.5px]">رئيس قسم مراكز النظافة</p>
-                            <div className="space-y-1 text-[10px]">
-                              <p className="flex justify-between items-center text-slate-800">
-                                <span>الاسم:</span>
-                                <span className="text-slate-400 font-mono text-[9px]">...........................................</span>
-                              </p>
-                              <p className="flex justify-between items-center text-slate-800">
-                                <span>التوقيع:</span>
-                                <span className="text-slate-400 font-mono text-[9px]">...........................................</span>
-                              </p>
-                              <p className="flex justify-between items-center text-slate-800">
-                                <span>التاريخ:</span>
-                                <span className="text-slate-500 font-mono font-bold text-[9px]">      /      /   2026</span>
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="grid grid-cols-2 gap-4 items-stretch text-[10px] font-bold text-slate-950 max-w-[550px] mx-auto">
-                          {/* Right: اعتماد رئيس المركز */}
-                          <div className="border border-slate-900 p-2 space-y-2 bg-slate-50 text-right rounded-lg shadow-sm">
-                            <p className="font-black border-b border-slate-900 text-center bg-slate-200/80 text-slate-950 py-0.5 mb-1.5 rounded text-[10.5px]">اعتماد رئيس المركز</p>
-                            <div className="space-y-1 text-[10px]">
-                              <p className="flex justify-between items-center text-slate-800">
-                                <span>الاسم:</span>
-                                <span className="text-slate-400 font-mono text-[9px]">...........................................</span>
-                              </p>
-                              <p className="flex justify-between items-center text-slate-800">
-                                <span>التوقيع:</span>
-                                <span className="text-slate-400 font-mono text-[9px]">...........................................</span>
-                              </p>
-                              <p className="flex justify-between items-center text-slate-800">
-                                <span>التاريخ:</span>
-                                <span className="text-slate-500 font-mono font-bold text-[9px]">      /      /   2026</span>
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Left: اعتماد رئيس قسم مراكز النظافة */}
-                          <div className="border border-slate-900 p-2 space-y-2 bg-slate-50 text-right rounded-lg shadow-sm">
-                            <p className="font-black border-b border-slate-900 text-center bg-slate-200/80 text-slate-950 py-0.5 mb-1.5 rounded text-[10.5px]">اعتماد رئيس قسم مراكز النظافة</p>
-                            <div className="space-y-1 text-[10px]">
-                              <p className="flex justify-between items-center text-slate-800">
-                                <span>الاسم:</span>
-                                <span className="text-slate-400 font-mono text-[9px]">...........................................</span>
-                              </p>
-                              <p className="flex justify-between items-center text-slate-800">
-                                <span>التوقيع:</span>
-                                <span className="text-slate-400 font-mono text-[9px]">...........................................</span>
-                              </p>
-                              <p className="flex justify-between items-center text-slate-800">
-                                <span>التاريخ:</span>
-                                <span className="text-slate-500 font-mono font-bold text-[9px]">      /      /   2026</span>
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      )}
+                          );
+                        })}
+                      </div>
                     </div>
 
                     {/* Sheet Footer */}
@@ -2885,27 +3006,39 @@ export default function StatisticsReport({
                   </div>
                 </div>
 
-                {/* Additional Metadata fields (to align with paper) */}
+                 {/* Additional Metadata fields (to align with paper) */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <label className="text-xs font-bold text-gray-400">المسمى الوظيفي للموظف</label>
-                    <input 
-                      type="text"
-                      className="municipal-input focus:ring-municipality-gold"
+                    <select 
+                      className="municipal-input focus:ring-municipality-gold bg-white text-slate-900 border-gray-200 text-xs font-black cursor-pointer"
                       value={fieldForm.jobTitle || ''}
                       onChange={e => setFieldForm({ ...fieldForm, jobTitle: e.target.value })}
-                      placeholder="مفتش نظافة أو مساعد"
-                    />
+                    >
+                      <option value="">فارغ / لم يتم التحديد</option>
+                      <option value="مفتش">مفتش</option>
+                      <option value="مساعد مفتش">مساعد مفتش</option>
+                      <option value="مشرف">مشرف</option>
+                      <option value="مساعد مشرف">مساعد مشرف</option>
+                      <option value="رئيس المراكز">رئيس المراكز</option>
+                      <option value="المراقب">المراقب</option>
+                      <option value="مساعد مراقب">مساعد مراقب</option>
+                    </select>
                   </div>
                   <div className="space-y-1">
                     <label className="text-xs font-bold text-gray-400">نوبة العمل (Shift)</label>
-                    <input 
-                      type="text"
-                      className="municipal-input focus:ring-municipality-gold"
+                    <select 
+                      className="municipal-input focus:ring-municipality-gold bg-white text-slate-900 border-gray-200 text-xs font-black cursor-pointer"
                       value={fieldForm.shift || ''}
                       onChange={e => setFieldForm({ ...fieldForm, shift: e.target.value })}
-                      placeholder="نوبة أ / ب / ج / صباحية"
-                    />
+                    >
+                      <option value="">فارغ / لا نوبة</option>
+                      <option value="أ">أ</option>
+                      <option value="ب">ب</option>
+                      <option value="ج">ج</option>
+                      <option value="صباحية">صباحية</option>
+                      <option value="مسائية">مسائية</option>
+                    </select>
                   </div>
                 </div>
 
@@ -3209,10 +3342,22 @@ export default function StatisticsReport({
                         <p className="text-slate-500 font-bold border-b border-slate-300 pb-1 flex items-center gap-1 font-black">
                           بيانات المفتش المسؤول
                         </p>
-                        <p className="font-black text-slate-900 text-sm">الاسم: {fieldForm.inspectorName || ''}</p>
-                        <p className="font-bold text-slate-700">المسمى الوظيفي: {fieldForm.jobTitle || 'مفتش نظافة'}</p>
-                        <p className="font-bold text-slate-700">المركز: {fieldForm.centerName || ''} | النوبة: {fieldForm.shift || ''}</p>
-                        <p className="font-bold text-slate-700">رقم الهاتف: {fieldForm.phoneNumber || ''}</p>
+                        {!isFieldEmpty(fieldForm.inspectorName) && (
+                          <p className="font-black text-slate-900 text-sm">الاسم: {fieldForm.inspectorName}</p>
+                        )}
+                        {!isFieldEmpty(fieldForm.jobTitle) && (
+                          <p className="font-bold text-slate-700">المسمى الوظيفي: {fieldForm.jobTitle}</p>
+                        )}
+                        {(!isFieldEmpty(fieldForm.centerName) || !isFieldEmpty(fieldForm.shift)) && (
+                          <p className="font-bold text-slate-700">
+                            {!isFieldEmpty(fieldForm.centerName) ? `المركز: ${fieldForm.centerName}` : ''}
+                            {!isFieldEmpty(fieldForm.centerName) && !isFieldEmpty(fieldForm.shift) ? ' | ' : ''}
+                            {!isFieldEmpty(fieldForm.shift) ? `النوبة: ${fieldForm.shift}` : ''}
+                          </p>
+                        )}
+                        {!isFieldEmpty(fieldForm.phoneNumber) && (
+                          <p className="font-bold text-slate-700">رقم الهاتف: {fieldForm.phoneNumber}</p>
+                        )}
                       </div>
 
                       <div className="border border-slate-800 p-3 rounded-lg space-y-1.5 bg-slate-50/50">
@@ -3580,8 +3725,9 @@ export default function StatisticsReport({
                         const aggWarnings = (formData.warnings || 0) + (formData.undertakings || 0) + (formData.stickers || 0);
                         const aggTrips = (formData.tripsWaste || 0) + (formData.tripsBigDumper || 0) + (formData.tripsSmallDumper || 0) + (formData.tripsLorry || 0);
 
-                        const grandTotal = aggHygiene + aggViolations + aggComplaints + aggRoad + aggCars + aggWarnings + aggTrips;
-                        const maxVal = Math.max(1, aggHygiene, aggViolations, aggComplaints, aggRoad, aggCars, aggWarnings, aggTrips);
+                        const isWeekly = formData.reportType === 'weekly';
+                        const grandTotal = aggHygiene + aggViolations + aggComplaints + aggRoad + aggCars + aggWarnings + (isWeekly ? 0 : aggTrips);
+                        const maxVal = Math.max(1, aggHygiene, aggViolations, aggComplaints, aggRoad, aggCars, aggWarnings, ...(isWeekly ? [] : [aggTrips]));
 
                         const categories = [
                           { name: 'لائحة النظافة العامة م354', val: aggHygiene, color: '#154fc1', icon: '✨' },
@@ -3590,37 +3736,56 @@ export default function StatisticsReport({
                           { name: 'مخالفات إشغالات الطرق', val: aggRoad, color: '#3b82f6', icon: '⚠️' },
                           { name: 'رفع المركبات والمهملات', val: aggCars, color: '#0284c7', icon: '🚜' },
                           { name: 'الإنذارات والتعهدات والملصقات', val: aggWarnings, color: '#06b6d4', icon: '📌' },
-                          { name: 'حركة آليات دروب النقل (الدروب)', val: aggTrips, color: '#14b8a6', icon: '🚛' },
+                          ...(!isWeekly ? [
+                            { name: 'حركة آليات دروب النقل (الدروب)', val: aggTrips, color: '#14b8a6', icon: '🚛' }
+                          ] : [])
                         ];
 
                         return (
                           <div className="my-3 space-y-4 w-full text-slate-900">
-                            <div className="grid grid-cols-4 gap-2.5">
-                              <div className="border border-slate-900 bg-slate-50 p-2 text-center rounded-lg shadow-sm">
-                                <p className="text-[8px] font-bold text-slate-500 mb-0.5">مركز النظافة ونوبة العمل</p>
-                                <p className="text-[11px] font-black text-slate-950 text-center">
-                                  مركز {formData.centerName || '_________'} (نوبة {formData.shift || '___'})
-                                </p>
-                              </div>
-                              <div className="border border-slate-900 bg-slate-50 p-2 text-center rounded-lg shadow-sm">
-                                <p className="text-[8px] font-bold text-slate-500 mb-0.5">المسؤول / المفتش المسؤول</p>
-                                <p className="text-[11px] font-black text-slate-950 text-center">
-                                  {formData.inspectorName || '__________________'} ({formData.jobTitle || 'مفتش'})
-                                </p>
-                              </div>
-                              <div className="border border-slate-900 bg-slate-50 p-2 text-center rounded-lg shadow-sm">
-                                <p className="text-[8px] font-bold text-slate-500 mb-0.5">رقم الضبطية / الملف</p>
-                                <p className="text-[11px] font-bold font-mono text-slate-950 text-center">
-                                  {formData.fileNumber || '---------'}
-                                </p>
-                              </div>
-                              <div className="border border-slate-900 bg-slate-50 p-2 text-center rounded-lg shadow-sm">
-                                <p className="text-[8px] font-bold text-slate-500 mb-0.5">الفترة الزمنية للإحصائية</p>
-                                <p className="text-[10px] font-black text-center text-teal-850 font-mono">
-                                  {formData.date} ➔ {formData.dateTo || '------'}
-                                </p>
-                              </div>
-                            </div>
+                            {(() => {
+                              const headerCards = [];
+                              
+                              if (!isFieldEmpty(formData.centerName) || !isFieldEmpty(formData.shift)) {
+                                headerCards.push({
+                                  title: "مركز النظافة ونوبة العمل",
+                                  value: `مركز ${formData.centerName || ''} ${!isFieldEmpty(formData.shift) ? `(نوبة ${formData.shift})` : ''}`.trim()
+                                });
+                              }
+                              
+                              if (!isFieldEmpty(formData.inspectorName) || !isFieldEmpty(formData.jobTitle)) {
+                                headerCards.push({
+                                  title: "المسؤول / المفتش المسؤول",
+                                  value: `${formData.inspectorName || ''} ${!isFieldEmpty(formData.jobTitle) ? `(${formData.jobTitle})` : ''}`.trim()
+                                });
+                              }
+                              
+                              if (!isFieldEmpty(formData.fileNumber)) {
+                                headerCards.push({
+                                  title: "رقم الضبطية / الملف",
+                                  value: formData.fileNumber
+                                });
+                              }
+                              
+                              headerCards.push({
+                                title: "الفترة الزمنية للإحصائية",
+                                value: `${formData.date} ➔ ${formData.dateTo || '------'}`,
+                                isMono: true
+                              });
+
+                              return (
+                                <div className={`grid grid-cols-1 sm:grid-cols-${headerCards.length} gap-2.5`}>
+                                  {headerCards.map((card, idx) => (
+                                    <div key={idx} className="border border-slate-900 bg-slate-50 p-2 text-center rounded-lg shadow-sm">
+                                      <p className="text-[8px] font-bold text-slate-500 mb-0.5">{card.title}</p>
+                                      <p className={`text-[11px] font-black text-slate-950 text-center ${card.isMono ? 'font-mono' : ''}`}>
+                                        {card.value}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              );
+                            })()}
 
                             <div className="grid grid-cols-12 gap-3.5 items-stretch">
                               <div className="col-span-7 border border-slate-900 rounded-xl bg-white p-3.5 flex flex-col justify-between shadow-sm">
@@ -3771,29 +3936,31 @@ export default function StatisticsReport({
                                       </div>
                                     </div>
 
-                                    <div className="space-y-1">
-                                      <p className="text-[9.5px] font-black text-green-850 border-r-2 border-green-500 pr-1.5 py-0.2 select-none bg-green-50/30">
-                                        Surveys & Trips (الدروب)
-                                      </p>
-                                      <div className="grid grid-cols-4 gap-1 text-[8.5px] text-center font-bold">
-                                        <div className="bg-white border border-slate-200 p-0.5 rounded">
-                                          <p className="text-slate-500 text-[8px] font-bold text-center">النفايات</p>
-                                          <p className="font-mono font-black text-slate-950 text-center">{formData.tripsWaste || 0}</p>
-                                        </div>
-                                        <div className="bg-white border border-slate-200 p-0.5 rounded">
-                                          <p className="text-slate-500 text-[8px] font-bold text-center">كبير</p>
-                                          <p className="font-mono font-black text-slate-950 text-center">{formData.tripsBigDumper || 0}</p>
-                                        </div>
-                                        <div className="bg-white border border-slate-200 p-0.5 rounded">
-                                          <p className="text-slate-500 text-[8px] font-bold text-center">صغير</p>
-                                          <p className="font-mono font-black text-slate-950 text-center">{formData.tripsSmallDumper || 0}</p>
-                                        </div>
-                                        <div className="bg-white border border-slate-200 p-0.5 rounded">
-                                          <p className="text-slate-500 text-[8px] font-bold text-center">لوري</p>
-                                          <p className="font-mono font-black text-slate-950 text-center">{formData.tripsLorry || 0}</p>
+                                    {formData.reportType === 'monthly' && (
+                                      <div className="space-y-1">
+                                        <p className="text-[9.5px] font-black text-green-850 border-r-2 border-green-500 pr-1.5 py-0.2 select-none bg-green-50/30">
+                                          Surveys & Trips (الدروب)
+                                        </p>
+                                        <div className="grid grid-cols-4 gap-1 text-[8.5px] text-center font-bold">
+                                          <div className="bg-white border border-slate-200 p-0.5 rounded">
+                                            <p className="text-slate-500 text-[8px] font-bold text-center">النفايات</p>
+                                            <p className="font-mono font-black text-slate-950 text-center">{formData.tripsWaste || 0}</p>
+                                          </div>
+                                          <div className="bg-white border border-slate-200 p-0.5 rounded">
+                                            <p className="text-slate-500 text-[8px] font-bold text-center">كبير</p>
+                                            <p className="font-mono font-black text-slate-950 text-center">{formData.tripsBigDumper || 0}</p>
+                                          </div>
+                                          <div className="bg-white border border-slate-200 p-0.5 rounded">
+                                            <p className="text-slate-500 text-[8px] font-bold text-center">صغير</p>
+                                            <p className="font-mono font-black text-slate-950 text-center">{formData.tripsSmallDumper || 0}</p>
+                                          </div>
+                                          <div className="bg-white border border-slate-200 p-0.5 rounded">
+                                            <p className="text-slate-500 text-[8px] font-bold text-center">لوري</p>
+                                            <p className="font-mono font-black text-slate-950 text-center">{formData.tripsLorry || 0}</p>
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
+                                    )}
                                   </div>
                                 </div>
                               </div>
@@ -3807,101 +3974,40 @@ export default function StatisticsReport({
                       </div>
 
                       <div className="pt-2 border-t border-slate-600 text-slate-900">
-                        {formData.reportType === 'weekly' ? (
-                          <div className="grid grid-cols-3 gap-3 items-stretch text-[10px] font-bold text-slate-950">
-                            <div className="border border-slate-900 p-2 space-y-2 bg-slate-50 text-right rounded-lg shadow-sm">
-                              <p className="font-black border-b border-slate-900 text-center bg-slate-200/80 text-slate-950 py-0.5 mb-1.5 rounded text-[10.5px]">مشرف النوبة</p>
-                              <div className="space-y-1 text-[10px] text-right">
-                                <p className="flex justify-between items-center text-slate-800 text-right">
-                                  <span>الاسم:</span>
-                                  <span className="text-slate-400 font-mono text-[9px] text-right">...........................................</span>
+                        <div className="flex flex-row flex-wrap justify-center items-stretch gap-3 text-[10px] font-black text-slate-950">
+                          {currentSigs.map((sig, sIdx) => {
+                            const pct = Math.floor(100 / currentSigs.length) - 2;
+                            return (
+                              <div 
+                                key={sIdx} 
+                                className="border border-slate-900 p-2 space-y-1.5 bg-slate-50 text-right rounded-lg shadow-sm flex-1" 
+                                style={{ minWidth: `${pct}%`, maxWidth: `${pct}%` }}
+                              >
+                                <p className="font-bold border-b border-slate-900 text-center bg-slate-200/85 text-slate-950 py-0.5 mb-1.5 rounded text-[10.5px]">
+                                  {sig.role || 'اعتماد'}
                                 </p>
-                                <p className="flex justify-between items-center text-slate-800 text-right">
-                                  <span>التوقيع:</span>
-                                  <span className="text-slate-400 font-mono text-[9px] text-right">...........................................</span>
-                                </p>
-                                <p className="flex justify-between items-center text-slate-800 text-right">
-                                  <span>التاريخ:</span>
-                                  <span className="text-slate-500 font-mono font-bold text-[9px] text-right">      /      /   2026</span>
-                                </p>
+                                <div className="space-y-1 text-[10px]">
+                                  <p className="flex justify-between items-center text-slate-800">
+                                    <span>الاسم:</span>
+                                    <span className="text-slate-900 font-extrabold select-all">
+                                      {sig.name ? sig.name : '...........................................'}
+                                    </span>
+                                  </p>
+                                  <p className="flex justify-between items-center text-slate-800">
+                                    <span>التوقيع:</span>
+                                    <span className="text-slate-400 font-mono text-[9px]">...........................................</span>
+                                  </p>
+                                  <p className="flex justify-between items-center text-slate-800">
+                                    <span>التاريخ:</span>
+                                    <span className="text-slate-900 font-mono font-bold text-[9px]">
+                                      {sig.date ? sig.date : '      /      /   2026'}
+                                    </span>
+                                  </p>
+                                </div>
                               </div>
-                            </div>
-                            
-                            <div className="border border-slate-900 p-2 space-y-2 bg-slate-50 text-right rounded-lg shadow-sm">
-                              <p className="font-black border-b border-slate-900 text-center bg-slate-200/80 text-slate-950 py-0.5 mb-1.5 rounded text-[10.5px]">رئيس المركز</p>
-                              <div className="space-y-1 text-[10px] text-right">
-                                <p className="flex justify-between items-center text-slate-800 text-right">
-                                  <span>الاسم:</span>
-                                  <span className="text-slate-400 font-mono text-[9px] text-right">...........................................</span>
-                                </p>
-                                <p className="flex justify-between items-center text-slate-800 text-right">
-                                  <span>التوقيع:</span>
-                                  <span className="text-slate-400 font-mono text-[9px] text-right">...........................................</span>
-                                </p>
-                                <p className="flex justify-between items-center text-slate-800 text-right">
-                                  <span>التاريخ:</span>
-                                  <span className="text-slate-500 font-mono font-bold text-[9px] text-right">      /      /   2026</span>
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="border border-slate-900 p-2 space-y-2 bg-slate-50 text-right rounded-lg shadow-sm">
-                              <p className="font-black border-b border-slate-900 text-center bg-slate-200/80 text-slate-950 py-0.5 mb-1.5 rounded text-[10.5px]">رئيس قسم مراكز النظافة</p>
-                              <div className="space-y-1 text-[10px] text-right">
-                                <p className="flex justify-between items-center text-slate-800 text-right">
-                                  <span>الاسم:</span>
-                                  <span className="text-slate-400 font-mono text-[9px] text-right">...........................................</span>
-                                </p>
-                                <p className="flex justify-between items-center text-slate-800 text-right">
-                                  <span>التوقيع:</span>
-                                  <span className="text-slate-400 font-mono text-[9px] text-right">...........................................</span>
-                                </p>
-                                <p className="flex justify-between items-center text-slate-800 text-right">
-                                  <span>التاريخ:</span>
-                                  <span className="text-slate-500 font-mono font-bold text-[9px] text-right">      /      /   2026</span>
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="grid grid-cols-2 gap-4 items-stretch text-[10px] font-bold text-slate-950 max-w-[550px] mx-auto">
-                            <div className="border border-slate-900 p-2 space-y-2 bg-slate-50 text-right rounded-lg shadow-sm">
-                              <p className="font-black border-b border-slate-900 text-center bg-slate-200/80 text-slate-950 py-0.5 mb-1.5 rounded text-[10.5px]">اعتماد رئيس المركز</p>
-                              <div className="space-y-1 text-[10px] text-right">
-                                <p className="flex justify-between items-center text-slate-800 text-right">
-                                  <span>الاسم:</span>
-                                  <span className="text-slate-400 font-mono text-[9px] text-right">...........................................</span>
-                                </p>
-                                <p className="flex justify-between items-center text-slate-800 text-right">
-                                  <span>التوقيع:</span>
-                                  <span className="text-slate-400 font-mono text-[9px] text-right">...........................................</span>
-                                </p>
-                                <p className="flex justify-between items-center text-slate-800 text-right">
-                                  <span>التاريخ:</span>
-                                  <span className="text-slate-500 font-mono font-bold text-[9px] text-right">      /      /   2026</span>
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="border border-slate-900 p-2 space-y-2 bg-slate-50 text-right rounded-lg shadow-sm">
-                              <p className="font-black border-b border-slate-900 text-center bg-slate-200/80 text-slate-950 py-0.5 mb-1.5 rounded text-[10.5px]">اعتماد رئيس قسم مراكز النظافة</p>
-                              <div className="space-y-1 text-[10px] text-right">
-                                <p className="flex justify-between items-center text-slate-800 text-right">
-                                  <span>الاسم:</span>
-                                  <span className="text-slate-400 font-mono text-[9px] text-right">...........................................</span>
-                                </p>
-                                <p className="flex justify-between items-center text-slate-800 text-right">
-                                  <span>التوقيع:</span>
-                                  <span className="text-slate-400 font-mono text-[9px] text-right">...........................................</span>
-                                </p>
-                                <p className="flex justify-between items-center text-slate-800 text-right">
-                                  <span>التاريخ:</span>
-                                  <span className="text-slate-500 font-mono font-bold text-[9px] text-right">      /      /   2026</span>
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        )}
+                            );
+                          })}
+                        </div>
                       </div>
 
                       {/* Sheet Footer */}
