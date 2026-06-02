@@ -82,6 +82,14 @@ export default function NotesTab({ notes, onSave, onDelete }: NotesTabProps) {
     }
   });
 
+  // Guarantee stable ID if adding draft without active id
+  useEffect(() => {
+    if (isAdding && !activeNoteId) {
+      const gId = crypto.randomUUID();
+      setActiveNoteId(gId);
+    }
+  }, [isAdding, activeNoteId]);
+
   const [deletingId, setDeletingId] = useState<string | null>(null);
   
   // Note Form State
@@ -168,12 +176,17 @@ export default function NotesTab({ notes, onSave, onDelete }: NotesTabProps) {
     isAddingRef.current = isAdding;
   }, [isAdding]);
 
+  const onSaveRef = useRef(onSave);
+  useEffect(() => {
+    onSaveRef.current = onSave;
+  }, [onSave]);
+
   useEffect(() => {
     return () => {
       if (isAddingRef.current) {
         const note = newNoteRef.current;
         if (note.title.trim() || note.content.trim() || note.drawing.trim() || note.image.trim()) {
-          onSave({
+          onSaveRef.current({
             ...note,
             id: activeNoteIdRef.current || crypto.randomUUID(),
             date: new Date().toLocaleDateString('ar-KW')
@@ -181,7 +194,7 @@ export default function NotesTab({ notes, onSave, onDelete }: NotesTabProps) {
         }
       }
     };
-  }, [onSave]);
+  }, []);
 
   // Load existing drawing onto canvas when editor tabs or active note id changes
   useEffect(() => {
@@ -398,7 +411,7 @@ export default function NotesTab({ notes, onSave, onDelete }: NotesTabProps) {
       fontSize: 16, 
       appointmentDate: '' 
     });
-    setActiveNoteId(null);
+    setActiveNoteId(crypto.randomUUID());
     setIsAdding(true);
     setEditorTab('text');
     setCanvasHistory([]);
